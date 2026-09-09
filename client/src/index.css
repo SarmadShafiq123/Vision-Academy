@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+@import "tailwindcss";
+
+@layer theme {
+  :root {
+    --color-primary: #1a3a8f;
+    --color-accent: #29b6f6;
+    --color-neutral: #f5f7fa;
+    --color-text-dark: #1a1a2e;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
