@@ -1,6 +1,9 @@
 import { motion, useReducedMotion } from 'motion/react';
+import { Award, ShieldCheck, Lightbulb } from 'lucide-react';
 import StatsSection from '../components/StatsSection';
 import SectionHeading from '../components/SectionHeading';
+import ImageWithSkeleton from '../components/ImageWithSkeleton';
+import IconBadge from '../components/IconBadge';
 import missionImage from '../assets/about-mission.png';
 
 const fadeUp = {
@@ -14,9 +17,9 @@ const staggerContainer = {
 };
 
 const values = [
-  { icon: '🎓', title: 'Excellence',  text: 'We maintain the highest standards in education and continuously strive for improvement.' },
-  { icon: '🤝', title: 'Integrity',   text: 'Honesty, transparency, and ethical practices guide everything we do.' },
-  { icon: '🌟', title: 'Innovation',  text: 'We embrace new teaching methods and technologies to enhance learning.' },
+  { icon: Award,       title: 'Excellence',  text: 'We maintain the highest standards in education and continuously strive for improvement.' },
+  { icon: ShieldCheck, title: 'Integrity',   text: 'Honesty, transparency, and ethical practices guide everything we do.' },
+  { icon: Lightbulb,   title: 'Innovation',  text: 'We embrace new teaching methods and technologies to enhance learning.' },
 ];
 
 export default function About() {
@@ -65,20 +68,20 @@ export default function About() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
             <motion.div variants={staggerContainer} {...inView()}>
-              <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-semibold text-[#1a1a2e] mb-6">
+              <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold leading-tight text-[#1a1a2e] mb-6">
                 Our Mission &amp; Vision
               </motion.h2>
               <motion.div variants={fadeUp} className="space-y-6">
                 <div>
-                  <h3 className="text-2xl font-semibold text-[#1a3a8f] mb-3">Mission</h3>
-                  <p className="text-gray-700 text-lg leading-relaxed">
+                  <h3 className="text-2xl font-bold text-[#1a3a8f] mb-3">Mission</h3>
+                  <p className="text-gray-600 text-lg leading-relaxed">
                     To provide accessible, high-quality education that empowers students with both
                     academic knowledge and practical skills needed to thrive in an ever-evolving world.
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-2xl font-semibold text-[#1a3a8f] mb-3">Vision</h3>
-                  <p className="text-gray-700 text-lg leading-relaxed">
+                  <h3 className="text-2xl font-bold text-[#1a3a8f] mb-3">Vision</h3>
+                  <p className="text-gray-600 text-lg leading-relaxed">
                     To be the leading educational institution recognized for excellence in both
                     traditional academics and modern skill development, producing graduates who are
                     confident, competent, and ready to make meaningful contributions to society.
@@ -88,10 +91,11 @@ export default function About() {
             </motion.div>
 
             <motion.div variants={fadeUp} {...inView()}>
-              <img
+              <ImageWithSkeleton
                 src={missionImage}
                 alt="Students celebrating academic success"
-                className="h-96 w-full object-cover rounded-xl shadow-lg"
+                wrapperClassName="w-full"
+                className="h-96 w-full object-cover rounded-2xl shadow-[0_8px_30px_rgba(26,58,143,0.10)]"
               />
             </motion.div>
 
@@ -107,23 +111,23 @@ export default function About() {
             variants={staggerContainer}
             {...inView()}
           >
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-semibold text-[#1a1a2e] mb-6 text-center">
+            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold leading-tight text-[#1a1a2e] mb-6 text-center">
               Our Story
             </motion.h2>
             <motion.div variants={fadeUp} className="space-y-4">
-              <p className="text-gray-700 text-lg leading-relaxed">
+              <p className="text-gray-600 text-lg leading-relaxed">
                 Vision Academy was founded with a clear purpose: to bridge the gap between
                 traditional education and real-world skills. Our founders recognized that
                 students needed more than just textbook knowledge to succeed in today's
                 competitive landscape.
               </p>
-              <p className="text-gray-700 text-lg leading-relaxed">
+              <p className="text-gray-600 text-lg leading-relaxed">
                 Starting with a small classroom and big dreams in 2016, we've grown into a
                 comprehensive educational institution serving thousands of students. What sets
                 us apart is our dual focus — maintaining academic excellence while introducing
                 cutting-edge skill development programs.
               </p>
-              <p className="text-gray-700 text-lg leading-relaxed">
+              <p className="text-gray-600 text-lg leading-relaxed">
                 Today, we're proud to offer everything from matriculation and intermediate
                 programs to specialised courses in truck dispatch, web development, and AI
                 automation. Our success is measured not just in exam results, but in the
@@ -153,11 +157,11 @@ export default function About() {
               <motion.div
                 key={v.title}
                 variants={fadeUp}
-                whileHover={prefersReduced ? {} : { scale: 1.03, boxShadow: '0 20px 40px rgba(0,0,0,0.08)' }}
+                whileHover={prefersReduced ? {} : { y: -4, scale: 1.02, boxShadow: '0 20px 40px rgba(26,58,143,0.10)' }}
                 whileTap={prefersReduced ? {} : { scale: 0.98 }}
-                className="bg-[#f5f7fa] p-8 rounded-xl cursor-default"
+                className="bg-[#f5f7fa] p-8 rounded-2xl cursor-default shadow-[0_4px_20px_rgba(26,58,143,0.06)]"
               >
-                <div className="text-4xl mb-4">{v.icon}</div>
+                <IconBadge icon={v.icon} className="mb-4" />
                 <h3 className="text-xl font-semibold text-[#1a1a2e] mb-3">{v.title}</h3>
                 <p className="text-gray-600">{v.text}</p>
               </motion.div>

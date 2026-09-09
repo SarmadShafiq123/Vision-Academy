@@ -4,112 +4,82 @@ import StatsSection from '../components/StatsSection';
 import Button from '../components/Button';
 import SectionHeading from '../components/SectionHeading';
 import IconBadge from '../components/IconBadge';
+import ImageWithSkeleton from '../components/ImageWithSkeleton';
 import heroImage from '../assets/hero-home.png';
 import academyImage from '../assets/intro-academy.png';
 
 const whyChooseData = [
-  {
-    icon: GraduationCap,
-    title: 'Experienced Faculty',
-    description: 'Learn from industry experts and qualified teachers with years of experience.',
-  },
-  {
-    icon: BookOpen,
-    title: 'Modern Curriculum',
-    description: 'Updated course content aligned with current industry standards and trends.',
-  },
-  {
-    icon: Scale,
-    title: 'Skill + Academic Balance',
-    description: 'Perfect blend of academic excellence and practical skill development.',
-  },
-  {
-    icon: Target,
-    title: 'Result-Oriented Approach',
-    description: 'Focused on delivering measurable outcomes and student success.',
-  },
+  { icon: GraduationCap, title: 'Experienced Faculty',      description: 'Learn from industry experts and qualified teachers with years of experience.' },
+  { icon: BookOpen,      title: 'Modern Curriculum',        description: 'Updated course content aligned with current industry standards and trends.' },
+  { icon: Scale,         title: 'Skill + Academic Balance', description: 'Perfect blend of academic excellence and practical skill development.' },
+  { icon: Target,        title: 'Result-Oriented Approach', description: 'Focused on delivering measurable outcomes and student success.' },
 ];
 
-/** Stagger container variants */
-const staggerContainer = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
-};
-
+const staggerContainer = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   show:   { opacity: 1, y: 0, transition: { duration: 0.45, ease: 'easeOut' } },
 };
 
+// Card hover: lift + scale + blue-tinted shadow
+const cardHover = {
+  y: -4,
+  scale: 1.02,
+  boxShadow: '0 20px 40px rgba(26,58,143,0.12)',
+};
+
 export default function Home() {
   const prefersReduced = useReducedMotion();
 
-  // When reduced-motion is on, skip all motion props
   const motionProps = (variants) =>
     prefersReduced
       ? {}
       : { variants, initial: 'hidden', whileInView: 'show', viewport: { once: true, margin: '-60px' } };
 
-  const heroMotion = prefersReduced
-    ? {}
-    : { initial: 'hidden', animate: 'show' };
+  const heroMotion = prefersReduced ? {} : { initial: 'hidden', animate: 'show' };
 
   return (
     <div>
       {/* ── Hero ─────────────────────────────────────────────── */}
-      <section className="relative bg-gradient-to-br from-[#1a3a8f] to-[#29b6f6] text-white py-16 md:py-24 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative text-white py-16 md:py-24 overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #1a3a8f 0%, #1e44a8 50%, #29b6f6 100%)' }}>
+        {/* Grain overlay */}
+        <div aria-hidden="true" className="absolute inset-0 opacity-[0.04]"
+          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`, backgroundSize: '128px' }} />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-            {/* Text — staggered children */}
-            <motion.div
-              variants={staggerContainer}
-              {...heroMotion}
-            >
-              <motion.h1
-                variants={fadeUp}
-                className="text-4xl md:text-5xl lg:text-6xl font-semibold mb-6 leading-tight"
-              >
+            <motion.div variants={staggerContainer} {...heroMotion}>
+              <motion.h1 variants={fadeUp}
+                className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
                 Empowering Minds,<br />Shaping Futures
               </motion.h1>
-              <motion.p variants={fadeUp} className="text-lg md:text-xl mb-8 text-blue-100">
+              <motion.p variants={fadeUp} className="text-lg md:text-xl mb-8 text-blue-100 font-normal">
                 Join Vision Academy for quality education that combines academic excellence
                 with practical skills for tomorrow's success.
               </motion.p>
               <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4">
-                <motion.div
-                  whileHover={prefersReduced ? {} : { scale: 1.05 }}
-                  whileTap={prefersReduced ? {} : { scale: 0.97 }}
-                >
-                  <Button variant="secondary" to="/courses">
-                    Explore Courses
-                  </Button>
+                <motion.div whileHover={prefersReduced ? {} : { scale: 1.05 }} whileTap={prefersReduced ? {} : { scale: 0.97 }}>
+                  <Button variant="secondary" to="/courses">Explore Courses</Button>
                 </motion.div>
-                <motion.div
-                  whileHover={prefersReduced ? {} : { scale: 1.05 }}
-                  whileTap={prefersReduced ? {} : { scale: 0.97 }}
-                >
-                  <Button variant="outline" to="/contact">
-                    Contact Us
-                  </Button>
+                <motion.div whileHover={prefersReduced ? {} : { scale: 1.05 }} whileTap={prefersReduced ? {} : { scale: 0.97 }}>
+                  <Button variant="outline" to="/contact">Contact Us</Button>
                 </motion.div>
               </motion.div>
             </motion.div>
 
-            {/* Hero image — right column */}
             <motion.div
-              className="relative h-80 rounded-xl overflow-hidden shadow-2xl"
-              variants={fadeUp}
-              {...heroMotion}
+              className="relative h-80 rounded-2xl overflow-hidden shadow-2xl"
+              variants={fadeUp} {...heroMotion}
               transition={{ duration: 0.5, delay: prefersReduced ? 0 : 0.2 }}
             >
-              <img
+              <ImageWithSkeleton
                 src={heroImage}
                 alt="Students studying"
-                className="absolute inset-0 w-full h-full object-cover"
+                wrapperClassName="absolute inset-0"
+                className="w-full h-full object-cover"
               />
             </motion.div>
-
           </div>
         </div>
       </section>
@@ -118,38 +88,34 @@ export default function Home() {
       <section className="py-16 md:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-
-            <motion.div
-              {...motionProps(fadeUp)}
-            >
-              <img
+            <motion.div {...motionProps(fadeUp)}>
+              <ImageWithSkeleton
                 src={academyImage}
                 alt="Vision Academy"
-                className="h-96 w-full object-cover rounded-xl shadow-lg"
+                wrapperClassName="w-full"
+                className="h-96 w-full object-cover rounded-2xl shadow-[0_8px_30px_rgba(26,58,143,0.10)]"
               />
             </motion.div>
 
-            <motion.div
-              variants={staggerContainer}
-              {...(prefersReduced ? {} : { initial: 'hidden', whileInView: 'show', viewport: { once: true, margin: '-60px' } })}
-            >
-              <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-semibold text-[#1a1a2e] mb-6">
+            <motion.div variants={staggerContainer}
+              {...(prefersReduced ? {} : { initial: 'hidden', whileInView: 'show', viewport: { once: true, margin: '-60px' } })}>
+              <motion.h2 variants={fadeUp}
+                className="text-3xl md:text-4xl font-bold leading-tight text-[#1a1a2e] mb-6">
                 Welcome to Vision Academy
               </motion.h2>
-              <motion.p variants={fadeUp} className="text-gray-700 text-lg leading-relaxed mb-4">
+              <motion.p variants={fadeUp} className="text-gray-600 text-lg leading-relaxed mb-4">
                 At Vision Academy, we believe in nurturing talent and building futures.
                 With over a decade of excellence in education, we offer comprehensive programs
                 ranging from matriculation to intermediate levels, alongside cutting-edge
                 skill development courses.
               </motion.p>
-              <motion.p variants={fadeUp} className="text-gray-700 text-lg leading-relaxed">
+              <motion.p variants={fadeUp} className="text-gray-600 text-lg leading-relaxed">
                 Our mission is to provide students with not just academic knowledge, but
                 practical skills that prepare them for the real world. From truck dispatch
                 training to web development and AI automation, we're committed to making
                 education relevant and impactful.
               </motion.p>
             </motion.div>
-
           </div>
         </div>
       </section>
@@ -170,13 +136,13 @@ export default function Home() {
               <motion.div
                 key={item.title}
                 variants={fadeUp}
-                whileHover={prefersReduced ? {} : { scale: 1.03, boxShadow: '0 20px 40px rgba(0,0,0,0.12)' }}
+                whileHover={prefersReduced ? {} : cardHover}
                 whileTap={prefersReduced ? {} : { scale: 0.98 }}
-                className="bg-white p-8 rounded-xl shadow-md cursor-default transition-shadow group"
+                className="bg-white p-8 rounded-2xl shadow-[0_4px_20px_rgba(26,58,143,0.07)] cursor-default transition-shadow group"
               >
                 <IconBadge icon={item.icon} className="mb-4" />
-                <h3 className="text-xl font-semibold text-[#1a1a2e] mb-3">{item.title}</h3>
-                <p className="text-gray-600">{item.description}</p>
+                <h3 className="text-xl font-bold text-[#1a1a2e] mb-3 leading-tight">{item.title}</h3>
+                <p className="text-gray-500">{item.description}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -187,28 +153,20 @@ export default function Home() {
       <StatsSection />
 
       {/* ── CTA Banner ───────────────────────────────────────── */}
-      <section className="py-12 md:py-16 bg-gradient-to-r from-[#29b6f6] to-[#1a3a8f]">
-        <motion.div
-          className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
-          {...motionProps(fadeUp)}
-        >
-          <h2 className="text-3xl md:text-4xl font-semibold text-white mb-4">
-            Ready to Start Learning?
-          </h2>
-          <p className="text-blue-100 text-lg mb-8">
-            Join thousands of successful students. Get in touch with us today!
-          </p>
+      <section className="py-12 md:py-16 relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #1e44a8 0%, #1a3a8f 50%, #29b6f6 100%)' }}>
+        {/* Grain overlay */}
+        <div aria-hidden="true" className="absolute inset-0 opacity-[0.04]"
+          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`, backgroundSize: '128px' }} />
+        <motion.div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white" {...motionProps(fadeUp)}>
+          <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4">Ready to Start Learning?</h2>
+          <p className="text-blue-100 text-lg mb-8">Join thousands of successful students. Get in touch with us today!</p>
           <motion.div
             whileHover={prefersReduced ? {} : { scale: 1.05 }}
             whileTap={prefersReduced ? {} : { scale: 0.97 }}
             className="inline-block"
           >
-            <Button
-              variant="secondary"
-              href="https://wa.me/923126174004"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <Button variant="secondary" href="https://wa.me/923126174004" target="_blank" rel="noopener noreferrer">
               <span className="text-2xl mr-3">💬</span>
               Chat with us on WhatsApp
             </Button>

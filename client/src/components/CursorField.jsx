@@ -1,122 +1,124 @@
 /**
- * CursorField — persistent full-viewport 3D ambient background.
+ * CursorField (cursor-following glowing orb)
  *
- * Mounted once in App.jsx, outside the route tree, so it never remounts
- * on page navigation. Sits behind all content via z-index: -1 and never
- * intercepts pointer events (pointer-events: none).
+ * A single glowing sphere whose world-space position genuinely trails
+ * the cursor. The object moves, not the camera.
  *
- * Effect: a spread of brand-blue particles at varying Z depths. Moving the
- * cursor shifts the CAMERA slightly (not the whole scene), which creates a
- * natural parallax illusion — particles near the camera shift more than
- * distant ones. All movement is lerped (factor 0.05) so it feels floaty.
+ * How the cursor → world mapping works:
+ *  - Mouse is normalised to NDC [-1, 1] on each axis.
+ *  - We map NDC directly to a world position at a fixed Z depth in front
+ *    of the camera.  At camera Z=8 with fov=55 the visible half-height at
+ *    Z=0 is roughly 8 * tan(55°/2) ≈ 4.2 units, and half-width scales by
+ *    aspect.  We multiply NDC by those extents so the orb reaches every
+ *    corner of the screen.
+ *  - The orb lerps toward that target every frame (factor 0.08) — fast
+ *    enough to be clearly visible, slow enough to feel floaty.
+ *
+ * Visual treatment:
+ *  - MeshStandardMaterial with emissive color + high emissiveIntensity
+ *    gives a soft self-lit look without needing post-processing.
+ *  - Additive-like effect achieved via transparent + low opacity + no
+ *    depthWrite so the orb composites as a light source, not a solid ball.
+ *  - A second, slightly larger outer sphere at very low opacity creates
+ *    a glow halo.
  *
  * Performance safeguards:
- *  - DPR capped at [1, 1.5]
- *  - 200 particles max — sufficient for visual richness, light on the GPU
- *  - prefers-reduced-motion → frameloop="never", camera stays still
- *  - Page Visibility API → pauses RAF when the tab is hidden
- *  - window mousemove listener is passive and cleaned up on unmount
- *  - Every geometry and material is disposed on unmount
+ *  - DPR capped [1, 1.5]
+ *  - prefers-reduced-motion → frameloop="never", orb stays centred/static
+ *  - Page Visibility API → pauses RAF when tab is hidden
+ *  - window mousemove passive listener, cleaned up on unmount
+ *  - Geometry + material disposed on unmount
  */
 
-import { useRef, useEffect, useMemo } from 'react';
+import { useRef, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useReducedMotion } from 'motion/react';
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-
-const PARTICLE_COUNT = 200;
-
-// How far the camera drifts in response to the cursor (world units).
-// Keep small — this is a depth-parallax hint, not cursor-chasing.
-const CAM_DRIFT_X = 0.8;
-const CAM_DRIFT_Y = 0.5;
-
-// Lerp factor — lower = smoother/slower, higher = snappier
-const LERP = 0.05;
+// ─── Lerp factor — 0.08 is snappy enough to clearly follow the cursor ────────
+const LERP = 0.08;
 
 // ─── Scene ───────────────────────────────────────────────────────────────────
 
-/**
- * ParticleField
- * Renders 200 point-sprites spread across a volume of roughly 20×20×16 units.
- * Depth spread (Z range ±8) is what makes the camera-shift feel 3-dimensional.
- */
-function ParticleField({ paused }) {
-  const ptsRef = useRef(null);
+function GlowOrb({ mouseRef, paused, reduced }) {
+  const coreRef  = useRef(null);
+  const haloRef  = useRef(null);
+  const posRef   = useRef({ x: 0, y: 0 }); // smoothed position
+  const { camera, size, viewport } = useThree();
 
-  const positions = useMemo(() => {
-    const arr = new Float32Array(PARTICLE_COUNT * 3);
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      arr[i * 3]     = (Math.random() - 0.5) * 20;   // x  ±10
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 20;   // y  ±10
-      arr[i * 3 + 2] = (Math.random() - 0.5) * 16;   // z  ±8  ← depth spread
-    }
-    return arr;
-  }, []);
+  useFrame(() => {
+    if (paused.current) return;
+    if (reduced) return;
 
-  // Very slow self-rotation so the field never feels completely static
-  useFrame((_, delta) => {
-    if (!ptsRef.current || paused.current) return;
-    ptsRef.current.rotation.y += delta * 0.025;
-    ptsRef.current.rotation.x += delta * 0.010;
+    const core = coreRef.current;
+    const halo = haloRef.current;
+    if (!core || !halo) return;
+
+    // Convert NDC mouse to world units at Z=0 using viewport extents.
+    // viewport.width/height are already in world units at Z=camera.position.z
+    // adjusted for the camera's distance — three-fiber keeps these in sync.
+    const targetX = mouseRef.current.x * (viewport.width  / 2);
+    const targetY = mouseRef.current.y * (viewport.height / 2);
+
+    posRef.current.x += (targetX - posRef.current.x) * LERP;
+    posRef.current.y += (targetY - posRef.current.y) * LERP;
+
+    core.position.x = posRef.current.x;
+    core.position.y = posRef.current.y;
+    halo.position.x = posRef.current.x;
+    halo.position.y = posRef.current.y;
+
+    // Gentle idle rotation so it never looks completely frozen
+    core.rotation.y += 0.005;
+    core.rotation.x += 0.003;
   });
 
+  // Dispose on unmount
   useEffect(() => {
-    const pts = ptsRef.current;
+    const c = coreRef.current;
+    const h = haloRef.current;
     return () => {
-      pts?.geometry?.dispose();
-      if (pts?.material) {
-        Array.isArray(pts.material)
-          ? pts.material.forEach((m) => m.dispose())
-          : pts.material.dispose();
-      }
+      c?.geometry?.dispose();
+      c?.material?.dispose();
+      h?.geometry?.dispose();
+      h?.material?.dispose();
     };
   }, []);
 
   return (
-    <points ref={ptsRef}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-      </bufferGeometry>
-      <pointsMaterial
-        color="#29b6f6"
-        size={0.06}
-        sizeAttenuation   // near particles appear larger than far ones
-        transparent
-        opacity={0.65}
-        depthWrite={false}
-      />
-    </points>
+    <>
+      {/* Core orb — emissive bright blue, small refined size */}
+      <mesh ref={coreRef} position={[0, 0, 0]}>
+        {/*
+         * radius=0.28, detail=2 — maps to roughly 40-50px screen size
+         * at camera Z=8 with fov=55
+         */}
+        <icosahedronGeometry args={[0.28, 2]} />
+        <meshStandardMaterial
+          color="#29b6f6"
+          emissive="#29b6f6"
+          emissiveIntensity={2.2}
+          transparent
+          opacity={0.70}
+          depthWrite={false}
+          wireframe={false}
+        />
+      </mesh>
+
+      {/* Outer halo — tight glow, not a large diffuse blob */}
+      <mesh ref={haloRef} position={[0, 0, -0.1]}>
+        <icosahedronGeometry args={[0.44, 1]} />
+        <meshStandardMaterial
+          color="#1a3a8f"
+          emissive="#29b6f6"
+          emissiveIntensity={0.8}
+          transparent
+          opacity={0.10}
+          depthWrite={false}
+          side={2} /* THREE.DoubleSide = 2 */
+        />
+      </mesh>
+    </>
   );
-}
-
-/**
- * CameraRig
- * Reads the shared mouseRef and lerps the camera toward the target offset
- * each frame. This is the core of the parallax effect — because THREE
- * perspective projection makes near objects shift more than far objects
- * when the viewpoint moves, the depth spread in ParticleField naturally
- * produces a convincing front/back parallax with zero extra math.
- */
-function CameraRig({ mouseRef, paused }) {
-  // smoothed camera position (lerped each frame)
-  const smooth = useRef({ x: 0, y: 0 });
-  const { camera } = useThree();
-
-  useFrame(() => {
-    if (paused.current) return;
-
-    smooth.current.x += (mouseRef.current.x * CAM_DRIFT_X - smooth.current.x) * LERP;
-    smooth.current.y += (mouseRef.current.y * CAM_DRIFT_Y - smooth.current.y) * LERP;
-
-    camera.position.x = smooth.current.x;
-    camera.position.y = smooth.current.y;
-    // Keep Z fixed — only X/Y drift for the parallax effect
-    camera.lookAt(0, 0, 0);
-  });
-
-  return null; // renders nothing, only manipulates the camera
 }
 
 // ─── Root component ──────────────────────────────────────────────────────────
@@ -126,27 +128,24 @@ export default function CursorField() {
   const mouseRef = useRef({ x: 0, y: 0 });
   const paused   = useRef(false);
 
-  // Window-level mouse tracking — normalised to [-1, 1] on each axis
+  // Window-level mouse tracking — normalised to [-1, 1]
   useEffect(() => {
     if (reduced) return;
-
     const onMove = (e) => {
       mouseRef.current = {
         x:   (e.clientX / window.innerWidth)  * 2 - 1,
-        // Y inverted: moving up gives positive Y (matches Three.js convention)
         y: -((e.clientY / window.innerHeight) * 2 - 1),
       };
     };
-
     window.addEventListener('mousemove', onMove, { passive: true });
     return () => window.removeEventListener('mousemove', onMove);
   }, [reduced]);
 
-  // Page Visibility API — freeze the render loop when the tab is hidden
+  // Page Visibility API — freeze RAF when tab is hidden
   useEffect(() => {
-    const onVisibility = () => { paused.current = document.hidden; };
-    document.addEventListener('visibilitychange', onVisibility);
-    return () => document.removeEventListener('visibilitychange', onVisibility);
+    const onVis = () => { paused.current = document.hidden; };
+    document.addEventListener('visibilitychange', onVis);
+    return () => document.removeEventListener('visibilitychange', onVis);
   }, []);
 
   return (
@@ -155,22 +154,20 @@ export default function CursorField() {
       style={{
         position:      'fixed',
         inset:         0,
-        zIndex:        -1,       // behind every page element
-        pointerEvents: 'none',   // never blocks clicks, scrolls, or focus
-        opacity:       0.25,     // subtle ambient layer
+        zIndex:        -1,         // behind ALL page content — never in the stacking path of clicks
+        pointerEvents: 'none',     // belt-and-suspenders on the wrapper
+        opacity:       0.55,
       }}
     >
       <Canvas
         dpr={[1, 1.5]}
         camera={{ position: [0, 0, 8], fov: 55 }}
-        style={{ background: 'transparent' }}
-        // Stop R3F's internal RAF entirely when reduced-motion is preferred
+        style={{ background: 'transparent', pointerEvents: 'none' }}  // explicit on the canvas element too
         frameloop={reduced ? 'never' : 'always'}
+        gl={{ alpha: true }}
       >
-        <ambientLight intensity={0.4} />
-        <ParticleField paused={paused} />
-        {/* CameraRig is only mounted when motion is allowed */}
-        {!reduced && <CameraRig mouseRef={mouseRef} paused={paused} />}
+        {/* No ambient/point lights needed — emissive material is self-lit */}
+        <GlowOrb mouseRef={mouseRef} paused={paused} reduced={reduced} />
       </Canvas>
     </div>
   );

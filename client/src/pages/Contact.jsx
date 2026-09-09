@@ -1,16 +1,13 @@
 import { useState } from 'react';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { Phone, MessageCircle, Mail, MapPin, Clock } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import Button from '../components/Button';
 
-// ─────────────────────────────────────────────────────────────
-// EmailJS credentials are loaded from .env — fill in the values
-// in the .env file at the project root (client/.env).
-//   VITE_EMAILJS_SERVICE_ID   → your service ID from EmailJS dashboard
-//   VITE_EMAILJS_TEMPLATE_ID  → your template ID from EmailJS dashboard
-//   VITE_EMAILJS_PUBLIC_KEY   → your public key from EmailJS → Account → API Keys
-// ─────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// EmailJS credentials — fill in client/.env
+//   VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID, VITE_EMAILJS_PUBLIC_KEY
+// ─────────────────────────────────────────────────────────────────────────────
 const EMAILJS_SERVICE_ID  = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const EMAILJS_PUBLIC_KEY  = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
@@ -19,7 +16,6 @@ const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   show:   { opacity: 1, y: 0, transition: { duration: 0.45, ease: 'easeOut' } },
 };
-
 const staggerContainer = {
   hidden: {},
   show: { transition: { staggerChildren: 0.1 } },
@@ -29,13 +25,13 @@ const contactItems = [
   {
     icon: Phone,
     title: 'Phone',
-    content: <a href="tel:+923126174004" className="text-[#29b6f6] hover:underline text-lg">+92 312 6174004</a>,
+    content: <a href="tel:+923126174004" className="text-[#29b6f6] hover:underline text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 rounded">+92 312 6174004</a>,
     sub: 'Call us for immediate assistance',
   },
   {
     icon: MessageCircle,
     title: 'WhatsApp',
-    content: <a href="https://wa.me/923126174004" target="_blank" rel="noopener noreferrer" className="text-[#29b6f6] hover:underline text-lg">Chat on WhatsApp</a>,
+    content: <a href="https://wa.me/923126174004" target="_blank" rel="noopener noreferrer" className="text-[#29b6f6] hover:underline text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 rounded">Chat on WhatsApp</a>,
     sub: 'Quick responses via WhatsApp',
   },
   {
@@ -62,7 +58,7 @@ const contactItems = [
           href="https://wa.me/923126174004"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-[#25d366] hover:bg-[#1ebe5d] text-white text-sm font-medium rounded-lg transition-colors"
+          className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-[#25d366] hover:bg-[#1ebe5d] text-white text-sm font-medium rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2"
         >
           <MessageCircle size={14} strokeWidth={1.75} /> Chat on WhatsApp
         </a>
@@ -72,10 +68,111 @@ const contactItems = [
   },
 ];
 
+// ─── Floating label field ─────────────────────────────────────────────────────
+
+/**
+ * FloatingLabelInput
+ * The label sits inside the field by default. On focus OR when the field
+ * has a value it animates up to float above the input border.
+ */
+function FloatingLabelInput({ id, name, label, type = 'text', value, onChange, disabled, required }) {
+  const [focused, setFocused] = useState(false);
+  const prefersReduced        = useReducedMotion();
+  const floated               = focused || value.length > 0;
+
+  return (
+    <div className="relative">
+      <input
+        type={type}
+        id={id}
+        name={name}
+        value={value}
+        onChange={onChange}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        disabled={disabled}
+        required={required}
+        placeholder="" /* empty so :placeholder-shown works as fallback */
+        className={[
+          'peer w-full px-4 pt-6 pb-2 border rounded-xl bg-white',
+          'disabled:opacity-60 transition-shadow',
+          'focus:outline-none',
+          focused
+            ? 'border-[#1a3a8f] ring-2 ring-blue-200'
+            : 'border-gray-300',
+        ].join(' ')}
+      />
+      {/* Floating label */}
+      <motion.label
+        htmlFor={id}
+        animate={
+          floated
+            ? { y: -10, scale: 0.78, color: focused ? '#1a3a8f' : '#6b7280' }
+            : { y: 0, scale: 1, color: '#6b7280' }
+        }
+        transition={prefersReduced ? { duration: 0 } : { duration: 0.2, ease: 'easeOut' }}
+        style={{ originX: 0 }}
+        className="absolute left-4 top-4 text-gray-500 pointer-events-none font-medium select-none"
+      >
+        {label}
+      </motion.label>
+    </div>
+  );
+}
+
+/**
+ * FloatingLabelTextarea — same pattern for the message field
+ */
+function FloatingLabelTextarea({ id, name, label, value, onChange, disabled, required, rows }) {
+  const [focused, setFocused] = useState(false);
+  const prefersReduced        = useReducedMotion();
+  const floated               = focused || value.length > 0;
+
+  return (
+    <div className="relative">
+      <textarea
+        id={id}
+        name={name}
+        value={value}
+        onChange={onChange}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        disabled={disabled}
+        required={required}
+        rows={rows}
+        placeholder=""
+        className={[
+          'peer w-full px-4 pt-6 pb-2 border rounded-xl bg-white resize-none',
+          'disabled:opacity-60 transition-shadow',
+          'focus:outline-none',
+          focused
+            ? 'border-[#1a3a8f] ring-2 ring-blue-200'
+            : 'border-gray-300',
+        ].join(' ')}
+      />
+      <motion.label
+        htmlFor={id}
+        animate={
+          floated
+            ? { y: -10, scale: 0.78, color: focused ? '#1a3a8f' : '#6b7280' }
+            : { y: 0, scale: 1, color: '#6b7280' }
+        }
+        transition={prefersReduced ? { duration: 0 } : { duration: 0.2, ease: 'easeOut' }}
+        style={{ originX: 0 }}
+        className="absolute left-4 top-4 text-gray-500 pointer-events-none font-medium select-none"
+      >
+        {label}
+      </motion.label>
+    </div>
+  );
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
 export default function Contact() {
   const prefersReduced = useReducedMotion();
-  const [formData, setFormData]   = useState({ name: '', email: '', message: '' });
-  const [submitState, setSubmitState] = useState('idle'); // 'idle' | 'sending' | 'success' | 'error'
+  const [formData, setFormData]     = useState({ name: '', email: '', message: '' });
+  const [submitState, setSubmitState] = useState('idle');
 
   const inView = () =>
     prefersReduced
@@ -88,18 +185,11 @@ export default function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitState('sending');
-
     try {
-      // Template variables must match the variable names in your EmailJS template.
-      // Expected template variables: {{from_name}}, {{from_email}}, {{message}}
       await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
-        {
-          from_name:  formData.name,
-          from_email: formData.email,
-          message:    formData.message,
-        },
+        { from_name: formData.name, from_email: formData.email, message: formData.message },
         EMAILJS_PUBLIC_KEY,
       );
       setSubmitState('success');
@@ -115,24 +205,14 @@ export default function Contact() {
       <section className="py-10 md:py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            className="bg-gradient-to-r from-[#1a3a8f] to-[#29b6f6] text-white rounded-xl px-8 py-10 text-center relative overflow-hidden"
+            className="bg-gradient-to-br from-[#1a3a8f] via-[#16307a] to-[#29b6f6] text-white rounded-2xl px-8 py-10 text-center relative overflow-hidden"
             variants={staggerContainer}
             {...(prefersReduced ? {} : { initial: 'hidden', animate: 'show' })}
           >
-            {/* Subtle geometric overlay */}
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 opacity-[0.07]"
-              style={{
-                backgroundImage:
-                  'repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%)',
-                backgroundSize: '18px 18px',
-              }}
-            />
+            <div aria-hidden="true" className="absolute inset-0 opacity-[0.07]"
+              style={{ backgroundImage: 'repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%)', backgroundSize: '18px 18px' }} />
             <div className="relative z-10">
-              <motion.h1 variants={fadeUp} className="text-3xl md:text-4xl font-semibold mb-3">
-                Contact Us
-              </motion.h1>
+              <motion.h1 variants={fadeUp} className="text-3xl md:text-4xl font-bold leading-tight mb-3">Contact Us</motion.h1>
               <motion.p variants={fadeUp} className="text-base md:text-lg text-blue-100">
                 Get in touch with us for admissions, inquiries, or support
               </motion.p>
@@ -146,98 +226,70 @@ export default function Contact() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
-            {/* Contact Form */}
+            {/* ── Contact Form ── */}
             <motion.div variants={staggerContainer} {...inView()}>
-              <motion.h2 variants={fadeUp} className="text-3xl font-semibold text-[#1a1a2e] mb-6">
+              <motion.h2 variants={fadeUp} className="text-3xl font-bold leading-tight text-[#1a1a2e] mb-6">
                 Send Us a Message
               </motion.h2>
-              <motion.form variants={fadeUp} onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block text-gray-700 font-medium mb-2">
-                    Your Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    disabled={submitState === 'sending'}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#29b6f6] focus:border-transparent transition-shadow disabled:opacity-60"
-                    placeholder="Enter your full name"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    disabled={submitState === 'sending'}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#29b6f6] focus:border-transparent transition-shadow disabled:opacity-60"
-                    placeholder="your.email@example.com"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="message" className="block text-gray-700 font-medium mb-2">
-                    Your Message
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                    rows="6"
-                    disabled={submitState === 'sending'}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#29b6f6] focus:border-transparent resize-none transition-shadow disabled:opacity-60"
-                    placeholder="Tell us how we can help you..."
-                  />
-                </div>
+              <motion.form variants={fadeUp} onSubmit={handleSubmit} className="space-y-6" noValidate>
 
-                {/* Inline success / error feedback */}
-                {submitState === 'success' && (
-                  <p
-                    role="status"
-                    className="text-green-700 bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-sm"
-                  >
-                    ✅ Message sent! We'll get back to you soon.
-                  </p>
-                )}
-                {submitState === 'error' && (
-                  <p
-                    role="alert"
-                    className="text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm"
-                  >
-                    ❌ Something went wrong. Please try again or contact us directly via WhatsApp.
-                  </p>
-                )}
+                <FloatingLabelInput
+                  id="name" name="name" label="Your Name"
+                  value={formData.name} onChange={handleChange}
+                  disabled={submitState === 'sending'} required
+                />
+                <FloatingLabelInput
+                  id="email" name="email" label="Email Address" type="email"
+                  value={formData.email} onChange={handleChange}
+                  disabled={submitState === 'sending'} required
+                />
+                <FloatingLabelTextarea
+                  id="message" name="message" label="Your Message"
+                  value={formData.message} onChange={handleChange}
+                  disabled={submitState === 'sending'} required rows={6}
+                />
+
+                {/* Inline feedback */}
+                <AnimatePresence mode="wait">
+                  {submitState === 'success' && (
+                    <motion.p
+                      key="success"
+                      role="status"
+                      initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="text-green-700 bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-sm"
+                    >
+                      ✅ Message sent! We'll get back to you soon.
+                    </motion.p>
+                  )}
+                  {submitState === 'error' && (
+                    <motion.p
+                      key="error"
+                      role="alert"
+                      initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm"
+                    >
+                      ❌ Something went wrong. Please try again or contact us via WhatsApp.
+                    </motion.p>
+                  )}
+                </AnimatePresence>
 
                 <motion.div
                   whileHover={prefersReduced ? {} : { scale: 1.02 }}
                   whileTap={prefersReduced ? {} : { scale: 0.98 }}
                 >
-                  <Button
-                    variant="primary"
-                    type="submit"
-                    fullWidth
-                    disabled={submitState === 'sending'}
-                  >
+                  <Button variant="primary" type="submit" fullWidth disabled={submitState === 'sending'}
+                    className="focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2">
                     {submitState === 'sending' ? 'Sending…' : 'Send Message'}
                   </Button>
                 </motion.div>
               </motion.form>
             </motion.div>
 
-            {/* Contact Info */}
+            {/* ── Contact Info ── */}
             <motion.div variants={staggerContainer} {...inView()}>
-              <motion.h2 variants={fadeUp} className="text-3xl font-semibold text-[#1a1a2e] mb-6">
+              <motion.h2 variants={fadeUp} className="text-3xl font-bold leading-tight text-[#1a1a2e] mb-6">
                 Contact Information
               </motion.h2>
               <div className="space-y-4">
@@ -267,49 +319,32 @@ export default function Contact() {
       {/* ── Map ──────────────────────────────────────────────── */}
       <section className="py-16 md:py-24 bg-[#f5f7fa]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.h2
-            className="text-3xl font-semibold text-[#1a1a2e] mb-8 text-center"
-            variants={fadeUp}
-            {...inView()}
-          >
+          <motion.h2 className="text-3xl font-bold leading-tight text-[#1a1a2e] mb-8 text-center" variants={fadeUp} {...inView()}>
             Find Us on the Map
           </motion.h2>
-          <motion.div
-            className="rounded-xl overflow-hidden shadow-lg"
-            variants={fadeUp}
-            {...inView()}
-          >
+          <motion.div className="rounded-xl overflow-hidden shadow-lg" variants={fadeUp} {...inView()}>
             <iframe
               title="Vision Academy Location"
               src="https://www.google.com/maps?q=32.1551,74.1788&z=17&output=embed"
-              width="100%"
-              height="350"
+              width="100%" height="350"
               style={{ border: 0, display: 'block' }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"
             />
           </motion.div>
         </div>
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────── */}
-      <section className="py-12 md:py-16 bg-gradient-to-r from-[#1a3a8f] to-[#29b6f6] text-white">
-        <motion.div
-          className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
-          variants={fadeUp}
-          {...inView()}
-        >
-          <h2 className="text-3xl md:text-4xl font-semibold mb-4">Visit Us Today</h2>
-          <p className="text-blue-100 text-lg mb-8">
-            We'd love to meet you in person and show you around our campus
-          </p>
-          <motion.div
-            whileHover={prefersReduced ? {} : { scale: 1.05 }}
-            whileTap={prefersReduced ? {} : { scale: 0.97 }}
-            className="inline-block"
-          >
-            <Button variant="secondary" href="https://wa.me/923126174004" target="_blank" rel="noopener noreferrer">
+      <section className="py-12 md:py-16 relative overflow-hidden text-white"
+        style={{ background: 'linear-gradient(135deg, #1a3a8f 0%, #16307a 50%, #29b6f6 100%)' }}>
+        <div aria-hidden="true" className="absolute inset-0 opacity-[0.04]"
+          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`, backgroundSize: '128px' }} />
+        <motion.div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center" variants={fadeUp} {...inView()}>
+          <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4">Visit Us Today</h2>
+          <p className="text-blue-100 text-lg mb-8">We'd love to meet you in person and show you around our campus</p>
+          <motion.div whileHover={prefersReduced ? {} : { scale: 1.05 }} whileTap={prefersReduced ? {} : { scale: 0.97 }} className="inline-block">
+            <Button variant="secondary" href="https://wa.me/923126174004" target="_blank" rel="noopener noreferrer"
+              className="focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2">
               <span className="text-2xl mr-3">💬</span>
               Schedule a Visit
             </Button>
