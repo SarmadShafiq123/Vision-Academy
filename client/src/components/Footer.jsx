@@ -79,16 +79,26 @@ export default function Footer() {
               </li>
             </ul>
 
-            {/* Social Icons — REPLACE with real icons */}
+            {/* Social Icons */}
             <div className="flex space-x-3 mt-4">
-              {['FB', 'IG', 'LI'].map((label) => (
-                <div
-                  key={label}
-                  className="w-8 h-8 bg-gray-700 rounded-xl flex items-center justify-center text-xs hover:bg-[#29b6f6] transition-colors cursor-pointer"
-                >
-                  {label}
-                </div>
-              ))}
+              <a
+                href="https://www.facebook.com/profile.php?id=61594178853129"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Vision Academy on Facebook"
+                className="w-8 h-8 bg-gray-700 rounded-xl flex items-center justify-center text-xs hover:bg-[#29b6f6] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+              >
+                FB
+              </a>
+              <a
+                href="https://www.instagram.com/visionacademyyy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Vision Academy on Instagram"
+                className="w-8 h-8 bg-gray-700 rounded-xl flex items-center justify-center text-xs hover:bg-[#29b6f6] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+              >
+                IG
+              </a>
             </div>
           </div>
         </div>
