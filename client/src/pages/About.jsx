@@ -55,7 +55,7 @@ export default function About() {
                 About Vision Academy
               </motion.h1>
               <motion.p variants={fadeUp} className="text-base md:text-lg text-blue-100">
-                Building futures through quality education since 2016
+                Building futures through quality education since 2000
               </motion.p>
             </div>
           </motion.div>
@@ -121,12 +121,7 @@ export default function About() {
                 students needed more than just textbook knowledge to succeed in today's
                 competitive landscape.
               </p>
-              <p className="text-gray-600 text-lg leading-relaxed">
-                Starting with a small classroom and big dreams in 2016, we've grown into a
-                comprehensive educational institution serving thousands of students. What sets
-                us apart is our dual focus — maintaining academic excellence while introducing
-                cutting-edge skill development programs.
-              </p>
+            
               <p className="text-gray-600 text-lg leading-relaxed">
                 Today, we're proud to offer everything from matriculation and intermediate
                 programs to specialised courses in truck dispatch, web development, and AI
