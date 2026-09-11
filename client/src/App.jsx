@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollProgressBar from './components/ScrollProgressBar';
 import ScrollToTop from './components/ScrollToTop';
+import CursorDot from './components/CursorDot';
 import LoadingScreen, { isFirstLoad } from './components/LoadingScreen';
 import { ThemeProvider } from './context/ThemeContext';
 import { LenisProvider, useLenis } from './context/LenisContext';
@@ -95,6 +96,9 @@ export default function App() {
 
           {/* ── Scroll progress bar (top of viewport) ─────────── */}
           <ScrollProgressBar />
+
+          {/* ── Custom cursor dot (pointer:fine only) ─────────── */}
+          <CursorDot />
 
           {/*
            * CursorField: fixed full-viewport 3D ambient background.

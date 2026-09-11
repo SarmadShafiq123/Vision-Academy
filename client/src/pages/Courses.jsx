@@ -7,6 +7,7 @@ import {
 import Button from '../components/Button';
 import SectionHeading from '../components/SectionHeading';
 import IconBadge from '../components/IconBadge';
+import MagneticButton from '../components/MagneticButton';
 
 const academicPrograms = [
   { title: 'Class 9',             description: 'Foundation year with comprehensive curriculum for all subjects.' },
@@ -143,13 +144,15 @@ export default function Courses() {
                       <IconBadge icon={BookOpen} className="mb-4" />
                       <h3 className="text-lg font-bold text-[#1a1a2e] dark:text-[#e8eaf0] mb-3 leading-tight">{program.title}</h3>
                       <p className="text-gray-600 dark:text-gray-400 mb-6 flex-1 text-sm leading-relaxed">{program.description}</p>
-                      <Button
-                        variant="primary" fullWidth
-                        to={`/contact?program=${encodeURIComponent(program.title)}`}
-                        className="mt-auto focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"
-                      >
-                        Learn More
-                      </Button>
+                      <MagneticButton className="w-full">
+                        <Button
+                          variant="primary" fullWidth
+                          to={`/contact?program=${encodeURIComponent(program.title)}`}
+                          className="mt-auto focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"
+                        >
+                          Learn More
+                        </Button>
+                      </MagneticButton>
                     </motion.div>
                   ))}
                 </motion.div>
@@ -199,14 +202,16 @@ export default function Courses() {
                       <IconBadge icon={course.icon} className="mb-4" />
                       <h3 className="text-2xl font-bold text-[#1a1a2e] dark:text-[#e8eaf0] mb-3 leading-tight">{course.title}</h3>
                       <p className="text-gray-600 dark:text-gray-400 mb-6 flex-1 leading-relaxed">{course.description}</p>
-                      <Button
-                        variant="accent" fullWidth
-                        href={`https://wa.me/923126174004?text=${encodeURIComponent(`Hi, I'm interested in enrolling in the ${course.title} course`)}`}
-                        target="_blank" rel="noopener noreferrer"
-                        className="mt-auto focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"
-                      >
-                        Enroll Now
-                      </Button>
+                      <MagneticButton className="w-full">
+                        <Button
+                          variant="accent" fullWidth
+                          href={`https://wa.me/923126174004?text=${encodeURIComponent(`Hi, I'm interested in enrolling in the ${course.title} course`)}`}
+                          target="_blank" rel="noopener noreferrer"
+                          className="mt-auto focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"
+                        >
+                          Enroll Now
+                        </Button>
+                      </MagneticButton>
                     </motion.div>
                   ))}
                 </motion.div>

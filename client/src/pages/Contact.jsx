@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { Phone, MessageCircle, Mail, MapPin, Clock } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import Button from '../components/Button';
+import MagneticButton from '../components/MagneticButton';
 
 const EMAILJS_SERVICE_ID  = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
@@ -266,15 +267,12 @@ export default function Contact() {
                   )}
                 </AnimatePresence>
 
-                <motion.div
-                  whileHover={prefersReduced ? {} : { scale: 1.02 }}
-                  whileTap={prefersReduced ? {} : { scale: 0.98 }}
-                >
+                <MagneticButton className="w-full">
                   <Button variant="primary" type="submit" fullWidth disabled={submitState === 'sending'}
                     className="focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2">
                     {submitState === 'sending' ? 'Sending…' : 'Send Message'}
                   </Button>
-                </motion.div>
+                </MagneticButton>
               </motion.form>
             </motion.div>
 

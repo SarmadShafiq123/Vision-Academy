@@ -1,10 +1,13 @@
-import { motion, useReducedMotion } from 'motion/react';
+import { useRef } from 'react';
+import { motion, useReducedMotion, useScroll, useTransform, useSpring } from 'motion/react';
 import { GraduationCap, BookOpen, Scale, Target } from 'lucide-react';
 import StatsSection from '../components/StatsSection';
 import Button from '../components/Button';
 import SectionHeading from '../components/SectionHeading';
 import IconBadge from '../components/IconBadge';
 import ImageWithSkeleton from '../components/ImageWithSkeleton';
+import MagneticButton from '../components/MagneticButton';
+import { useLenisScroll } from '../hooks/useLenisScroll';
 import heroImage from '../assets/hero-home.png';
 import academyImage from '../assets/intro-academy.png';
 
@@ -20,15 +23,36 @@ const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   show:   { opacity: 1, y: 0, transition: { duration: 0.45, ease: 'easeOut' } },
 };
-
-const cardHover = {
-  y: -4,
-  scale: 1.02,
-  boxShadow: '0 20px 40px rgba(26,58,143,0.12)',
-};
+const cardHover = { y: -4, scale: 1.02, boxShadow: '0 20px 40px rgba(26,58,143,0.12)' };
 
 export default function Home() {
   const prefersReduced = useReducedMotion();
+
+  // ── Refs for parallax targets ───────────────────────────────────────────
+  const heroSectionRef  = useRef(null);
+  const introSectionRef = useRef(null);
+
+  // ── Scroll progress within each section ────────────────────────────────
+  const { scrollYProgress: heroProgress } = useScroll({
+    target:  heroSectionRef,
+    offset:  ['start start', 'end start'],
+  });
+  const { scrollYProgress: introProgress } = useScroll({
+    target:  introSectionRef,
+    offset:  ['start end', 'end start'],
+  });
+
+  // ── Parallax Y transforms ───────────────────────────────────────────────
+  // Hero image moves slightly slower than scroll (subtle upward shift)
+  const heroImgY = useTransform(heroProgress, [0, 1], prefersReduced ? [0, 0] : [-30, 30]);
+  // Intro image moves in the opposite phase for visual variety
+  const introImgY = useTransform(introProgress, [0, 1], prefersReduced ? [0, 0] : [20, -20]);
+
+  // ── Velocity skew on hero content ──────────────────────────────────────
+  const { velocity } = useLenisScroll();
+  // Map velocity → very small skew: clamp ±2.5deg, spring smoothed
+  const rawSkew = useTransform(velocity, [-40, 0, 40], prefersReduced ? [0, 0, 0] : [-2.5, 0, 2.5]);
+  const skewY   = useSpring(rawSkew, { stiffness: 80, damping: 20, mass: 0.5 });
 
   const motionProps = (variants) =>
     prefersReduced
@@ -40,15 +64,23 @@ export default function Home() {
   return (
     <div>
       {/* ── Hero ─────────────────────────────────────────────── */}
-      <section className="relative text-white py-16 md:py-24 overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #1a3a8f 0%, #1e44a8 50%, #29b6f6 100%)' }}>
+      <section
+        ref={heroSectionRef}
+        className="relative text-white py-16 md:py-24 overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #1a3a8f 0%, #1e44a8 50%, #29b6f6 100%)' }}
+      >
         <div aria-hidden="true" className="absolute inset-0 opacity-[0.04]"
           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`, backgroundSize: '128px' }} />
+
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-            <motion.div variants={staggerContainer} {...heroMotion}>
-              {/* ── Typography polish: stepped up one level on large screens ── */}
+            {/* Hero text — subtle velocity skew */}
+            <motion.div
+              variants={staggerContainer}
+              style={{ skewY }}
+              {...heroMotion}
+            >
               <motion.h1 variants={fadeUp}
                 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight">
                 Empowering Minds,<br />Shaping Futures
@@ -58,42 +90,56 @@ export default function Home() {
                 with practical skills for tomorrow's success.
               </motion.p>
               <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4">
-                <motion.div whileHover={prefersReduced ? {} : { scale: 1.05 }} whileTap={prefersReduced ? {} : { scale: 0.97 }}>
+                <MagneticButton>
                   <Button variant="secondary" to="/courses">Explore Courses</Button>
-                </motion.div>
-                <motion.div whileHover={prefersReduced ? {} : { scale: 1.05 }} whileTap={prefersReduced ? {} : { scale: 0.97 }}>
+                </MagneticButton>
+                <MagneticButton>
                   <Button variant="outline" to="/contact">Contact Us</Button>
-                </motion.div>
+                </MagneticButton>
               </motion.div>
             </motion.div>
 
+            {/* Hero image — parallax */}
             <motion.div
               className="relative h-80 rounded-2xl overflow-hidden shadow-2xl"
               variants={fadeUp} {...heroMotion}
               transition={{ duration: 0.5, delay: prefersReduced ? 0 : 0.2 }}
             >
-              <ImageWithSkeleton
-                src={heroImage}
-                alt="Students studying"
-                wrapperClassName="absolute inset-0"
-                className="w-full h-full object-cover"
-              />
+              {/* Extra height so parallax shift doesn't reveal edges */}
+              <motion.div
+                className="absolute inset-0"
+                style={{ y: heroImgY, height: 'calc(100% + 60px)', top: '-30px' }}
+              >
+                <ImageWithSkeleton
+                  src={heroImage}
+                  alt="Students studying"
+                  wrapperClassName="absolute inset-0"
+                  className="w-full h-full object-cover"
+                />
+              </motion.div>
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* ── Brief Intro ──────────────────────────────────────── */}
-      <section className="py-16 md:py-24 bg-white dark:bg-[#0d1425]">
+      <section ref={introSectionRef} className="py-16 md:py-24 bg-white dark:bg-[#0d1425]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <motion.div {...motionProps(fadeUp)}>
-              <ImageWithSkeleton
-                src={academyImage}
-                alt="Vision Academy"
-                wrapperClassName="w-full"
-                className="h-96 w-full object-cover rounded-2xl shadow-[0_8px_30px_rgba(26,58,143,0.10)]"
-              />
+
+            {/* Intro image — parallax */}
+            <motion.div
+              {...motionProps(fadeUp)}
+              className="overflow-hidden rounded-2xl"
+            >
+              <motion.div style={{ y: introImgY }}>
+                <ImageWithSkeleton
+                  src={academyImage}
+                  alt="Vision Academy"
+                  wrapperClassName="w-full"
+                  className="h-96 w-full object-cover rounded-2xl shadow-[0_8px_30px_rgba(26,58,143,0.10)]"
+                />
+              </motion.div>
             </motion.div>
 
             <motion.div variants={staggerContainer}
@@ -159,16 +205,12 @@ export default function Home() {
         <motion.div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white" {...motionProps(fadeUp)}>
           <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4">Ready to Start Learning?</h2>
           <p className="text-blue-100 text-lg mb-8 leading-relaxed">Join thousands of successful students. Get in touch with us today!</p>
-          <motion.div
-            whileHover={prefersReduced ? {} : { scale: 1.05 }}
-            whileTap={prefersReduced ? {} : { scale: 0.97 }}
-            className="inline-block"
-          >
+          <MagneticButton className="inline-block">
             <Button variant="secondary" href="https://wa.me/923126174004" target="_blank" rel="noopener noreferrer">
               <span className="text-2xl mr-3">💬</span>
               Chat with us on WhatsApp
             </Button>
-          </motion.div>
+          </MagneticButton>
         </motion.div>
       </section>
     </div>

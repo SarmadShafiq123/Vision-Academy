@@ -41,6 +41,17 @@ html.dark body {
   color: #e8eaf0;
 }
 
+/* ── Custom cursor: hide default on fine-pointer devices ─────────────────── */
+@media (pointer: fine) {
+  body {
+    cursor: none;
+  }
+  /* Restore cursor on interactive elements so they still look clickable */
+  a, button, [role="button"], input, textarea, select, label {
+    cursor: none;
+  }
+}
+
 /* ── Lenis: prevent native scroll fighting with smooth scroll ─────────────── */
 html.lenis,
 html.lenis body {
