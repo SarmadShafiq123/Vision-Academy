@@ -4,17 +4,17 @@ import { Phone, MessageCircle, Mail } from 'lucide-react';
 import logo from '../assets/vision.png';
 
 const quickLinks = [
-  { name: 'Home',    path: '/' },
+  { name: 'Home',     path: '/' },
   { name: 'About Us', path: '/about' },
-  { name: 'Courses', path: '/courses' },
-  { name: 'Contact', path: '/contact' },
+  { name: 'Courses',  path: '/courses' },
+  { name: 'Contact',  path: '/contact' },
 ];
 
 export default function Footer() {
   const prefersReduced = useReducedMotion();
 
   return (
-    <footer className="bg-[#1a1a2e] text-white mt-auto">
+    <footer className="bg-[#1a1a2e] dark:bg-[#080e1f] text-white mt-auto border-t border-transparent dark:border-[#2a3352]">
       <motion.div
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
         initial={prefersReduced ? false : { opacity: 0, y: 20 }}
@@ -26,6 +26,10 @@ export default function Footer() {
 
           {/* Logo + Description */}
           <div>
+            {/*
+             * Logo wrapper: always white-backed so the dark-blue logo is visible
+             * on both the dark footer (light mode) and the darker footer (dark mode).
+             */}
             <div className="bg-white rounded-xl inline-block px-3 py-2 mb-4">
               <img src={logo} alt="Vision Academy" className="h-20" />
             </div>
@@ -86,7 +90,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Vision Academy on Facebook"
-                className="w-8 h-8 bg-gray-700 rounded-xl flex items-center justify-center text-xs hover:bg-[#29b6f6] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                className="w-8 h-8 bg-gray-700 dark:bg-[#1e2d4a] rounded-xl flex items-center justify-center text-xs hover:bg-[#29b6f6] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
               >
                 FB
               </a>
@@ -95,7 +99,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Vision Academy on Instagram"
-                className="w-8 h-8 bg-gray-700 rounded-xl flex items-center justify-center text-xs hover:bg-[#29b6f6] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                className="w-8 h-8 bg-gray-700 dark:bg-[#1e2d4a] rounded-xl flex items-center justify-center text-xs hover:bg-[#29b6f6] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
               >
                 IG
               </a>
@@ -103,7 +107,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+        <div className="border-t border-gray-700 dark:border-[#2a3352] mt-8 pt-8 text-center text-gray-400 text-sm">
           <p>&copy; 2026 Vision Academy. All rights reserved.</p>
           <p className="text-xs text-gray-500 mt-2">
             Made with ❤️ by Sarmad Shafiq —{' '}

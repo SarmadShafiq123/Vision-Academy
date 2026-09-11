@@ -4,10 +4,6 @@ import { Phone, MessageCircle, Mail, MapPin, Clock } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import Button from '../components/Button';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// EmailJS credentials — fill in client/.env
-//   VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID, VITE_EMAILJS_PUBLIC_KEY
-// ─────────────────────────────────────────────────────────────────────────────
 const EMAILJS_SERVICE_ID  = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const EMAILJS_PUBLIC_KEY  = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
@@ -37,13 +33,13 @@ const contactItems = [
   {
     icon: Mail,
     title: 'Email',
-    content: <p className="text-gray-700 text-lg">info@visionacademy.com</p>,
+    content: <p className="text-gray-700 dark:text-gray-300 text-lg">info@visionacademy.com</p>,
     sub: 'Send us your detailed queries',
   },
   {
     icon: MapPin,
     title: 'Address',
-    content: <p className="text-gray-700 text-lg">554H+5CH, Gulshanabad Chah Chohan Wala</p>,
+    content: <p className="text-gray-700 dark:text-gray-300 text-lg">554H+5CH, Gulshanabad Chah Chohan Wala</p>,
     sub: 'Gujranwala, Pakistan',
   },
   {
@@ -51,7 +47,7 @@ const contactItems = [
     title: 'Appointment Only',
     content: (
       <>
-        <p className="text-gray-700">
+        <p className="text-gray-700 dark:text-gray-300">
           We currently operate by appointment. Reach out via WhatsApp or phone to schedule a visit.
         </p>
         <a
@@ -70,11 +66,6 @@ const contactItems = [
 
 // ─── Floating label field ─────────────────────────────────────────────────────
 
-/**
- * FloatingLabelInput
- * The label sits inside the field by default. On focus OR when the field
- * has a value it animates up to float above the input border.
- */
 function FloatingLabelInput({ id, name, label, type = 'text', value, onChange, disabled, required }) {
   const [focused, setFocused] = useState(false);
   const prefersReduced        = useReducedMotion();
@@ -92,22 +83,23 @@ function FloatingLabelInput({ id, name, label, type = 'text', value, onChange, d
         onBlur={() => setFocused(false)}
         disabled={disabled}
         required={required}
-        placeholder="" /* empty so :placeholder-shown works as fallback */
+        placeholder=""
         className={[
-          'peer w-full px-4 pt-6 pb-2 border rounded-xl bg-white',
+          'peer w-full px-4 pt-6 pb-2 border rounded-xl',
+          'bg-white dark:bg-[#16213e]',
+          'text-[#1a1a2e] dark:text-[#e8eaf0]',
           'disabled:opacity-60 transition-shadow',
           'focus:outline-none',
           focused
-            ? 'border-[#1a3a8f] ring-2 ring-blue-200'
-            : 'border-gray-300',
+            ? 'border-[#1a3a8f] dark:border-blue-400 ring-2 ring-blue-200 dark:ring-blue-900/50'
+            : 'border-gray-300 dark:border-[#2a3352]',
         ].join(' ')}
       />
-      {/* Floating label */}
       <motion.label
         htmlFor={id}
         animate={
           floated
-            ? { y: -10, scale: 0.78, color: focused ? '#1a3a8f' : '#6b7280' }
+            ? { y: -10, scale: 0.78, color: focused ? (document.documentElement.classList.contains('dark') ? '#93c5fd' : '#1a3a8f') : '#6b7280' }
             : { y: 0, scale: 1, color: '#6b7280' }
         }
         transition={prefersReduced ? { duration: 0 } : { duration: 0.2, ease: 'easeOut' }}
@@ -120,9 +112,6 @@ function FloatingLabelInput({ id, name, label, type = 'text', value, onChange, d
   );
 }
 
-/**
- * FloatingLabelTextarea — same pattern for the message field
- */
 function FloatingLabelTextarea({ id, name, label, value, onChange, disabled, required, rows }) {
   const [focused, setFocused] = useState(false);
   const prefersReduced        = useReducedMotion();
@@ -142,19 +131,21 @@ function FloatingLabelTextarea({ id, name, label, value, onChange, disabled, req
         rows={rows}
         placeholder=""
         className={[
-          'peer w-full px-4 pt-6 pb-2 border rounded-xl bg-white resize-none',
+          'peer w-full px-4 pt-6 pb-2 border rounded-xl resize-none',
+          'bg-white dark:bg-[#16213e]',
+          'text-[#1a1a2e] dark:text-[#e8eaf0]',
           'disabled:opacity-60 transition-shadow',
           'focus:outline-none',
           focused
-            ? 'border-[#1a3a8f] ring-2 ring-blue-200'
-            : 'border-gray-300',
+            ? 'border-[#1a3a8f] dark:border-blue-400 ring-2 ring-blue-200 dark:ring-blue-900/50'
+            : 'border-gray-300 dark:border-[#2a3352]',
         ].join(' ')}
       />
       <motion.label
         htmlFor={id}
         animate={
           floated
-            ? { y: -10, scale: 0.78, color: focused ? '#1a3a8f' : '#6b7280' }
+            ? { y: -10, scale: 0.78, color: focused ? (document.documentElement.classList.contains('dark') ? '#93c5fd' : '#1a3a8f') : '#6b7280' }
             : { y: 0, scale: 1, color: '#6b7280' }
         }
         transition={prefersReduced ? { duration: 0 } : { duration: 0.2, ease: 'easeOut' }}
@@ -171,7 +162,7 @@ function FloatingLabelTextarea({ id, name, label, value, onChange, disabled, req
 
 export default function Contact() {
   const prefersReduced = useReducedMotion();
-  const [formData, setFormData]     = useState({ name: '', email: '', message: '' });
+  const [formData, setFormData]       = useState({ name: '', email: '', message: '' });
   const [submitState, setSubmitState] = useState('idle');
 
   const inView = () =>
@@ -213,7 +204,7 @@ export default function Contact() {
               style={{ backgroundImage: 'repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%)', backgroundSize: '18px 18px' }} />
             <div className="relative z-10">
               <motion.h1 variants={fadeUp} className="text-3xl md:text-4xl font-bold leading-tight mb-3">Contact Us</motion.h1>
-              <motion.p variants={fadeUp} className="text-base md:text-lg text-blue-100">
+              <motion.p variants={fadeUp} className="text-base md:text-lg text-blue-100 leading-relaxed">
                 Get in touch with us for admissions, inquiries, or support
               </motion.p>
             </div>
@@ -222,13 +213,13 @@ export default function Contact() {
       </section>
 
       {/* ── Form + Info ──────────────────────────────────────── */}
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-white dark:bg-[#0d1425]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
             {/* ── Contact Form ── */}
             <motion.div variants={staggerContainer} {...inView()}>
-              <motion.h2 variants={fadeUp} className="text-3xl font-bold leading-tight text-[#1a1a2e] mb-6">
+              <motion.h2 variants={fadeUp} className="text-3xl font-bold leading-tight text-[#1a1a2e] dark:text-[#e8eaf0] mb-6">
                 Send Us a Message
               </motion.h2>
               <motion.form variants={fadeUp} onSubmit={handleSubmit} className="space-y-6" noValidate>
@@ -257,7 +248,7 @@ export default function Contact() {
                       role="status"
                       initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                       transition={{ duration: 0.25 }}
-                      className="text-green-700 bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-sm"
+                      className="text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/50 rounded-xl px-4 py-3 text-sm"
                     >
                       ✅ Message sent! We'll get back to you soon.
                     </motion.p>
@@ -268,7 +259,7 @@ export default function Contact() {
                       role="alert"
                       initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                       transition={{ duration: 0.25 }}
-                      className="text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm"
+                      className="text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50 rounded-xl px-4 py-3 text-sm"
                     >
                       ❌ Something went wrong. Please try again or contact us via WhatsApp.
                     </motion.p>
@@ -289,7 +280,7 @@ export default function Contact() {
 
             {/* ── Contact Info ── */}
             <motion.div variants={staggerContainer} {...inView()}>
-              <motion.h2 variants={fadeUp} className="text-3xl font-bold leading-tight text-[#1a1a2e] mb-6">
+              <motion.h2 variants={fadeUp} className="text-3xl font-bold leading-tight text-[#1a1a2e] dark:text-[#e8eaf0] mb-6">
                 Contact Information
               </motion.h2>
               <div className="space-y-4">
@@ -297,15 +288,15 @@ export default function Contact() {
                   <motion.div
                     key={item.title}
                     variants={fadeUp}
-                    className="flex items-start space-x-4 bg-[#f5f7fa] p-6 rounded-xl"
+                    className="flex items-start space-x-4 bg-[#f5f7fa] dark:bg-[#16213e] p-6 rounded-xl border border-transparent dark:border-[#2a3352]"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-blue-100 border border-blue-200 shadow-sm flex items-center justify-center flex-shrink-0">
-                      <item.icon size={20} strokeWidth={1.75} color="#1a3a8f" />
+                    <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/50 shadow-sm flex items-center justify-center flex-shrink-0">
+                      <item.icon size={20} strokeWidth={1.75} className="text-[#1a3a8f] dark:text-blue-300" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-[#1a1a2e] mb-1">{item.title}</h3>
+                      <h3 className="text-xl font-semibold text-[#1a1a2e] dark:text-[#e8eaf0] mb-1">{item.title}</h3>
                       {item.content}
-                      <p className="text-gray-600 mt-1 text-sm">{item.sub}</p>
+                      <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm">{item.sub}</p>
                     </div>
                   </motion.div>
                 ))}
@@ -317,12 +308,18 @@ export default function Contact() {
       </section>
 
       {/* ── Map ──────────────────────────────────────────────── */}
-      <section className="py-16 md:py-24 bg-[#f5f7fa]">
+      <section className="py-16 md:py-24 bg-[#f5f7fa] dark:bg-[#0a0f1e]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.h2 className="text-3xl font-bold leading-tight text-[#1a1a2e] mb-8 text-center" variants={fadeUp} {...inView()}>
+          <motion.h2
+            className="text-3xl font-bold leading-tight text-[#1a1a2e] dark:text-[#e8eaf0] mb-8 text-center"
+            variants={fadeUp} {...inView()}
+          >
             Find Us on the Map
           </motion.h2>
-          <motion.div className="rounded-xl overflow-hidden shadow-lg" variants={fadeUp} {...inView()}>
+          <motion.div
+            className="rounded-xl overflow-hidden shadow-lg border border-transparent dark:border-[#2a3352]"
+            variants={fadeUp} {...inView()}
+          >
             <iframe
               title="Vision Academy Location"
               src="https://www.google.com/maps?q=32.1551,74.1788&z=17&output=embed"
@@ -341,7 +338,7 @@ export default function Contact() {
           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`, backgroundSize: '128px' }} />
         <motion.div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center" variants={fadeUp} {...inView()}>
           <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4">Visit Us Today</h2>
-          <p className="text-blue-100 text-lg mb-8">We'd love to meet you in person and show you around our campus</p>
+          <p className="text-blue-100 text-lg mb-8 leading-relaxed">We'd love to meet you in person and show you around our campus</p>
           <motion.div whileHover={prefersReduced ? {} : { scale: 1.05 }} whileTap={prefersReduced ? {} : { scale: 0.97 }} className="inline-block">
             <Button variant="secondary" href="https://wa.me/923126174004" target="_blank" rel="noopener noreferrer"
               className="focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2">

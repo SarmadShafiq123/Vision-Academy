@@ -13,9 +13,6 @@ function StatItem({ number, label }) {
   const prefersReduced = useReducedMotion();
   const pulseControls  = useAnimation();
 
-  // Stable callback reference — useCallback with empty deps so this
-  // never changes identity across re-renders, giving the hook a stable
-  // onComplete even if StatItem's parent re-renders frequently.
   const handlePulse = useCallback(() => {
     if (prefersReduced) return;
     pulseControls.start({
@@ -27,8 +24,6 @@ function StatItem({ number, label }) {
   const [ref, displayValue] = useCountUp(number, 1800, handlePulse);
 
   return (
-    // Outer motion wrapper handles the fade-in scroll reveal only —
-    // no viewport prop here that could race with useInView in the hook.
     <motion.div
       className="text-center"
       initial={prefersReduced ? false : { opacity: 0, y: 20 }}
@@ -36,11 +31,6 @@ function StatItem({ number, label }) {
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.4 }}
     >
-      {/*
-       * Plain div carries the useCountUp ref. It always has rendered size
-       * (it wraps the visible number text), so IntersectionObserver fires
-       * reliably independent of Motion's animation state on the parent.
-       */}
       <div ref={ref}>
         <motion.div
           animate={pulseControls}
@@ -81,8 +71,12 @@ export default function StatsSection({ title, description }) {
             viewport={{ once: true }}
             transition={{ duration: 0.4 }}
           >
-            {title && <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4">{title}</h2>}
-            {description && <p className="text-blue-200 text-lg">{description}</p>}
+            {title && (
+              <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4">{title}</h2>
+            )}
+            {description && (
+              <p className="text-blue-200 text-lg leading-relaxed">{description}</p>
+            )}
           </motion.div>
         )}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">

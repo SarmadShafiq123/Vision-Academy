@@ -1,24 +1,49 @@
 /**
  * ScrollToTop
  * Floating circular button, bottom-right corner, that fades+scales in
- * once the user scrolls more than 400px, then smooth-scrolls to top.
+ * once the user scrolls more than 400px, then smooth-scrolls to top via Lenis.
+ *
+ * Visibility is driven by Lenis's scroll event (same source as Lenis itself uses),
+ * falling back to native window scroll if Lenis isn't ready.
  */
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { ArrowUp } from 'lucide-react';
+import { useLenis } from '../context/LenisContext';
 
 export default function ScrollToTop() {
-  const [visible, setVisible]     = useState(false);
-  const prefersReduced            = useReducedMotion();
+  const [visible, setVisible] = useState(false);
+  const prefersReduced        = useReducedMotion();
+  const lenisRef              = useLenis();
 
   useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 400);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    const lenis = lenisRef?.current;
 
-  const handleClick = () =>
-    window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+    if (lenis) {
+      const onScroll = ({ scroll }) => setVisible(scroll > 400);
+      lenis.on('scroll', onScroll);
+      return () => lenis.off('scroll', onScroll);
+    }
+
+    // Fallback: native scroll
+    const onNativeScroll = () => setVisible(window.scrollY > 400);
+    window.addEventListener('scroll', onNativeScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onNativeScroll);
+  // lenisRef is a stable ref — only re-run if identity changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lenisRef]);
+
+  const handleClick = () => {
+    const lenis = lenisRef?.current;
+    if (lenis) {
+      lenis.scrollTo(0, {
+        duration: prefersReduced ? 0 : 1,
+        easing: (t) => 1 - Math.pow(1 - t, 3),
+      });
+    } else {
+      window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -36,7 +61,7 @@ export default function ScrollToTop() {
           className={[
             'fixed bottom-8 right-6 z-50',
             'w-11 h-11 rounded-full',
-            'bg-[#1a3a8f] text-white shadow-lg',
+            'bg-[#1a3a8f] dark:bg-[#3d5fc4] text-white shadow-lg',
             'flex items-center justify-center',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2',
             'cursor-pointer',

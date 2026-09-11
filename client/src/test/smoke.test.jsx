@@ -11,6 +11,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { ThemeProvider } from '../context/ThemeContext';
 
 // ── 0. Stub @emailjs/browser ─────────────────────────────────────────────────
 vi.mock('@emailjs/browser', () => ({
@@ -41,7 +42,13 @@ vi.mock('@react-three/drei', () => ({
   Environment:   () => null,
 }));
 
-// ── 4. Stub motion/react ─────────────────────────────────────────────────────
+// ── 4a. Stub LenisContext (no actual Lenis in jsdom) ─────────────────────────
+vi.mock('../context/LenisContext', () => ({
+  LenisProvider: ({ children }) => <>{children}</>,
+  useLenis:      () => ({ current: null }),
+}));
+
+// ── 5. Stub motion/react ─────────────────────────────────────────────────────
 vi.mock('motion/react', async () => {
   const { forwardRef } = await import('react');
 
@@ -75,9 +82,10 @@ vi.mock('motion/react', async () => {
     useInView:        () => true,
     useAnimation:     () => mockControls,
     // Scroll hooks used by ScrollProgressBar
-    useScroll:  () => ({ scrollYProgress: { get: () => 0 } }),
-    useSpring:  (val) => val,
-    useTransform: (_val, _from, _to) => ({ get: () => 0 }),
+    useScroll:      () => ({ scrollYProgress: { get: () => 0 } }),
+    useSpring:      (val) => val,
+    useTransform:   (_val, _from, _to) => ({ get: () => 0 }),
+    useMotionValue: (_init) => ({ set: vi.fn(), get: () => 0 }),
   };
 });
 
@@ -86,9 +94,11 @@ vi.mock('motion/react', async () => {
 // ─────────────────────────────────────────────────────────────────────────────
 function renderWithRouter(ui, { route = '/' } = {}) {
   return render(
-    <MemoryRouter initialEntries={[route]}>
-      {ui}
-    </MemoryRouter>,
+    <ThemeProvider>
+      <MemoryRouter initialEntries={[route]}>
+        {ui}
+      </MemoryRouter>
+    </ThemeProvider>,
   );
 }
 

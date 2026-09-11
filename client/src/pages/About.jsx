@@ -40,7 +40,6 @@ export default function About() {
             variants={staggerContainer}
             {...(prefersReduced ? {} : { initial: 'hidden', animate: 'show' })}
           >
-            {/* Subtle geometric overlay */}
             <div
               aria-hidden="true"
               className="absolute inset-0 opacity-[0.07]"
@@ -54,7 +53,7 @@ export default function About() {
               <motion.h1 variants={fadeUp} className="text-3xl md:text-4xl font-semibold mb-3">
                 About Vision Academy
               </motion.h1>
-              <motion.p variants={fadeUp} className="text-base md:text-lg text-blue-100">
+              <motion.p variants={fadeUp} className="text-base md:text-lg text-blue-100 leading-relaxed">
                 Building futures through quality education since 2000
               </motion.p>
             </div>
@@ -63,25 +62,25 @@ export default function About() {
       </section>
 
       {/* ── Mission & Vision ─────────────────────────────────── */}
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-white dark:bg-[#0d1425]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
             <motion.div variants={staggerContainer} {...inView()}>
-              <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold leading-tight text-[#1a1a2e] mb-6">
+              <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold leading-tight text-[#1a1a2e] dark:text-[#e8eaf0] mb-6">
                 Our Mission &amp; Vision
               </motion.h2>
               <motion.div variants={fadeUp} className="space-y-6">
                 <div>
-                  <h3 className="text-2xl font-bold text-[#1a3a8f] mb-3">Mission</h3>
-                  <p className="text-gray-600 text-lg leading-relaxed">
+                  <h3 className="text-2xl font-bold text-[#1a3a8f] dark:text-blue-400 mb-3">Mission</h3>
+                  <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
                     To provide accessible, high-quality education that empowers students with both
                     academic knowledge and practical skills needed to thrive in an ever-evolving world.
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-[#1a3a8f] mb-3">Vision</h3>
-                  <p className="text-gray-600 text-lg leading-relaxed">
+                  <h3 className="text-2xl font-bold text-[#1a3a8f] dark:text-blue-400 mb-3">Vision</h3>
+                  <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
                     To be the leading educational institution recognized for excellence in both
                     traditional academics and modern skill development, producing graduates who are
                     confident, competent, and ready to make meaningful contributions to society.
@@ -104,25 +103,24 @@ export default function About() {
       </section>
 
       {/* ── Our Story ────────────────────────────────────────── */}
-      <section className="py-16 md:py-24 bg-[#f5f7fa]">
+      <section className="py-16 md:py-24 bg-[#f5f7fa] dark:bg-[#0a0f1e]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="max-w-4xl mx-auto"
             variants={staggerContainer}
             {...inView()}
           >
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold leading-tight text-[#1a1a2e] mb-6 text-center">
+            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold leading-tight text-[#1a1a2e] dark:text-[#e8eaf0] mb-6 text-center">
               Our Story
             </motion.h2>
             <motion.div variants={fadeUp} className="space-y-4">
-              <p className="text-gray-600 text-lg leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
                 Vision Academy was founded with a clear purpose: to bridge the gap between
                 traditional education and real-world skills. Our founders recognized that
                 students needed more than just textbook knowledge to succeed in today's
                 competitive landscape.
               </p>
-            
-              <p className="text-gray-600 text-lg leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
                 Today, we're proud to offer everything from matriculation and intermediate
                 programs to specialised courses in truck dispatch, web development, and AI
                 automation. Our success is measured not just in exam results, but in the
@@ -140,7 +138,7 @@ export default function About() {
       />
 
       {/* ── Core Values ──────────────────────────────────────── */}
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-white dark:bg-[#0d1425]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading title="Our Core Values" />
           <motion.div
@@ -154,11 +152,11 @@ export default function About() {
                 variants={fadeUp}
                 whileHover={prefersReduced ? {} : { y: -4, scale: 1.02, boxShadow: '0 20px 40px rgba(26,58,143,0.10)' }}
                 whileTap={prefersReduced ? {} : { scale: 0.98 }}
-                className="bg-[#f5f7fa] p-8 rounded-2xl cursor-default shadow-[0_4px_20px_rgba(26,58,143,0.06)]"
+                className="bg-[#f5f7fa] dark:bg-[#16213e] p-8 rounded-2xl cursor-default shadow-[0_4px_20px_rgba(26,58,143,0.06)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)] group"
               >
                 <IconBadge icon={v.icon} className="mb-4" />
-                <h3 className="text-xl font-semibold text-[#1a1a2e] mb-3">{v.title}</h3>
-                <p className="text-gray-600">{v.text}</p>
+                <h3 className="text-xl font-semibold text-[#1a1a2e] dark:text-[#e8eaf0] mb-3">{v.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{v.text}</p>
               </motion.div>
             ))}
           </motion.div>

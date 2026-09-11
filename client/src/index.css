@@ -2,6 +2,9 @@
 
 @import "tailwindcss";
 
+/* ── Tailwind v4: class-based dark mode ──────────────────────────────────── */
+@variant dark (&:where(.dark, .dark *));
+
 @layer theme {
   :root {
     --color-primary: #1a3a8f;
@@ -16,6 +19,8 @@ body {
   font-family: 'Poppins', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* smooth background/text transitions when toggling theme */
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 * {
@@ -28,4 +33,24 @@ body {
 :focus-visible {
   outline: 2px solid #29b6f6;
   outline-offset: 2px;
+}
+
+/* ── Dark-mode page background ───────────────────────────────────────────── */
+html.dark body {
+  background-color: #0d1425;
+  color: #e8eaf0;
+}
+
+/* ── Lenis: prevent native scroll fighting with smooth scroll ─────────────── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
 }

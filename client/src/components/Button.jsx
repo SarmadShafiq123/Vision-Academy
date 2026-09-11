@@ -18,11 +18,22 @@ export default function Button({
   ].join(' ');
 
   const variants = {
-    // Hover: scale handled by Motion at call sites; shadow bloom added here
-    primary:   'bg-[#1a3a8f] text-white px-8 py-3 hover:bg-[#16307a] hover:shadow-lg hover:shadow-blue-800/30',
-    secondary: 'bg-white text-[#1a3a8f] px-8 py-3 hover:bg-gray-50 hover:shadow-lg hover:shadow-black/10',
-    outline:   'border-2 border-white text-white px-8 py-3 hover:bg-white hover:text-[#1a3a8f] hover:shadow-lg hover:shadow-white/20',
-    accent:    'bg-[#29b6f6] text-white px-8 py-3 hover:bg-[#1a9fd6] hover:shadow-lg hover:shadow-sky-400/30',
+    primary: [
+      'bg-[#1a3a8f] dark:bg-[#3d5fc4] text-white px-8 py-3',
+      'hover:bg-[#16307a] dark:hover:bg-[#4a6fd4] hover:shadow-lg hover:shadow-blue-800/30',
+    ].join(' '),
+    secondary: [
+      'bg-white dark:bg-[#16213e] text-[#1a3a8f] dark:text-blue-300 px-8 py-3',
+      'hover:bg-gray-50 dark:hover:bg-[#1e2d4a] hover:shadow-lg hover:shadow-black/10',
+    ].join(' '),
+    outline: [
+      'border-2 border-white text-white px-8 py-3',
+      'hover:bg-white hover:text-[#1a3a8f] hover:shadow-lg hover:shadow-white/20',
+    ].join(' '),
+    accent: [
+      'bg-[#29b6f6] text-white px-8 py-3',
+      'hover:bg-[#1a9fd6] hover:shadow-lg hover:shadow-sky-400/30',
+    ].join(' '),
   };
 
   const widthClass    = fullWidth ? 'w-full' : '';

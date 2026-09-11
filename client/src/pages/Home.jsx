@@ -21,7 +21,6 @@ const fadeUp = {
   show:   { opacity: 1, y: 0, transition: { duration: 0.45, ease: 'easeOut' } },
 };
 
-// Card hover: lift + scale + blue-tinted shadow
 const cardHover = {
   y: -4,
   scale: 1.02,
@@ -43,18 +42,18 @@ export default function Home() {
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="relative text-white py-16 md:py-24 overflow-hidden"
         style={{ background: 'linear-gradient(135deg, #1a3a8f 0%, #1e44a8 50%, #29b6f6 100%)' }}>
-        {/* Grain overlay */}
         <div aria-hidden="true" className="absolute inset-0 opacity-[0.04]"
           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`, backgroundSize: '128px' }} />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
             <motion.div variants={staggerContainer} {...heroMotion}>
+              {/* ── Typography polish: stepped up one level on large screens ── */}
               <motion.h1 variants={fadeUp}
-                className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
+                className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight">
                 Empowering Minds,<br />Shaping Futures
               </motion.h1>
-              <motion.p variants={fadeUp} className="text-lg md:text-xl mb-8 text-blue-100 font-normal">
+              <motion.p variants={fadeUp} className="text-lg md:text-xl mb-8 text-blue-100 font-normal leading-relaxed">
                 Join Vision Academy for quality education that combines academic excellence
                 with practical skills for tomorrow's success.
               </motion.p>
@@ -85,7 +84,7 @@ export default function Home() {
       </section>
 
       {/* ── Brief Intro ──────────────────────────────────────── */}
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-white dark:bg-[#0d1425]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div {...motionProps(fadeUp)}>
@@ -100,16 +99,16 @@ export default function Home() {
             <motion.div variants={staggerContainer}
               {...(prefersReduced ? {} : { initial: 'hidden', whileInView: 'show', viewport: { once: true, margin: '-60px' } })}>
               <motion.h2 variants={fadeUp}
-                className="text-3xl md:text-4xl font-bold leading-tight text-[#1a1a2e] mb-6">
+                className="text-3xl md:text-4xl font-bold leading-tight text-[#1a1a2e] dark:text-[#e8eaf0] mb-6">
                 Welcome to Vision Academy
               </motion.h2>
-              <motion.p variants={fadeUp} className="text-gray-600 text-lg leading-relaxed mb-4">
+              <motion.p variants={fadeUp} className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-4">
                 At Vision Academy, we believe in nurturing talent and building futures.
                 With over a decade of excellence in education, we offer comprehensive programs
                 ranging from matriculation to intermediate levels, alongside cutting-edge
                 skill development courses.
               </motion.p>
-              <motion.p variants={fadeUp} className="text-gray-600 text-lg leading-relaxed">
+              <motion.p variants={fadeUp} className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
                 Our mission is to provide students with not just academic knowledge, but
                 practical skills that prepare them for the real world. From truck dispatch
                 training to web development and AI automation, we're committed to making
@@ -121,7 +120,7 @@ export default function Home() {
       </section>
 
       {/* ── Why Choose Us ────────────────────────────────────── */}
-      <section className="py-16 md:py-24 bg-[#f5f7fa]">
+      <section className="py-16 md:py-24 bg-[#f5f7fa] dark:bg-[#0a0f1e]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
             title="Why Choose Vision Academy?"
@@ -138,11 +137,11 @@ export default function Home() {
                 variants={fadeUp}
                 whileHover={prefersReduced ? {} : cardHover}
                 whileTap={prefersReduced ? {} : { scale: 0.98 }}
-                className="bg-white p-8 rounded-2xl shadow-[0_4px_20px_rgba(26,58,143,0.07)] cursor-default transition-shadow group"
+                className="bg-white dark:bg-[#16213e] p-8 rounded-2xl shadow-[0_4px_20px_rgba(26,58,143,0.07)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)] cursor-default transition-shadow group"
               >
                 <IconBadge icon={item.icon} className="mb-4" />
-                <h3 className="text-xl font-bold text-[#1a1a2e] mb-3 leading-tight">{item.title}</h3>
-                <p className="text-gray-500">{item.description}</p>
+                <h3 className="text-xl font-bold text-[#1a1a2e] dark:text-[#e8eaf0] mb-3 leading-tight">{item.title}</h3>
+                <p className="text-gray-500 dark:text-gray-400 leading-relaxed">{item.description}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -155,12 +154,11 @@ export default function Home() {
       {/* ── CTA Banner ───────────────────────────────────────── */}
       <section className="py-12 md:py-16 relative overflow-hidden"
         style={{ background: 'linear-gradient(135deg, #1e44a8 0%, #1a3a8f 50%, #29b6f6 100%)' }}>
-        {/* Grain overlay */}
         <div aria-hidden="true" className="absolute inset-0 opacity-[0.04]"
           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`, backgroundSize: '128px' }} />
         <motion.div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white" {...motionProps(fadeUp)}>
           <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4">Ready to Start Learning?</h2>
-          <p className="text-blue-100 text-lg mb-8">Join thousands of successful students. Get in touch with us today!</p>
+          <p className="text-blue-100 text-lg mb-8 leading-relaxed">Join thousands of successful students. Get in touch with us today!</p>
           <motion.div
             whileHover={prefersReduced ? {} : { scale: 1.05 }}
             whileTap={prefersReduced ? {} : { scale: 0.97 }}

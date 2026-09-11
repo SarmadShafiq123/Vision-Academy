@@ -41,16 +41,12 @@ const staggerContainer = {
   show: { transition: { staggerChildren: 0.1 } },
 };
 
-// Section reveal/hide variants — opacity+y is reliable across Motion versions.
-// Height animation on motion.section can misfire because the browser can't
-// measure the content height at paint time; fade is equally smooth and works.
 const sectionVariants = {
   hidden: { opacity: 0, y: 16 },
   show:   { opacity: 1, y: 0,  transition: { duration: 0.30, ease: 'easeOut' } },
   exit:   { opacity: 0, y: -8, transition: { duration: 0.20, ease: 'easeIn'  } },
 };
 
-// Filter options
 const FILTERS = ['All', 'Academic Programs', 'Skill Courses'];
 
 export default function Courses() {
@@ -79,7 +75,7 @@ export default function Courses() {
               style={{ backgroundImage: 'repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%)', backgroundSize: '18px 18px' }} />
             <div className="relative z-10">
               <motion.h1 variants={fadeUp} className="text-3xl md:text-4xl font-bold leading-tight mb-3">Our Courses</motion.h1>
-              <motion.p variants={fadeUp} className="text-base md:text-lg text-blue-100">
+              <motion.p variants={fadeUp} className="text-base md:text-lg text-blue-100 leading-relaxed">
                 Choose from academic programs or skill development courses
               </motion.p>
             </div>
@@ -88,7 +84,7 @@ export default function Courses() {
       </section>
 
       {/* ── Filter Toggle ─────────────────────────────────────── */}
-      <section className="pt-10 pb-2 bg-white">
+      <section className="pt-10 pb-2 bg-white dark:bg-[#0d1425]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap gap-2 justify-center" role="group" aria-label="Filter courses">
             {FILTERS.map((f) => {
@@ -102,8 +98,8 @@ export default function Courses() {
                     'px-5 py-2 rounded-full text-sm font-semibold transition-colors',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2',
                     active
-                      ? 'bg-[#1a3a8f] text-white shadow-md'
-                      : 'bg-blue-50 text-[#1a3a8f] hover:bg-blue-100 border border-blue-200',
+                      ? 'bg-[#1a3a8f] dark:bg-[#3d5fc4] text-white shadow-md'
+                      : 'bg-blue-50 dark:bg-blue-950/40 text-[#1a3a8f] dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200 dark:border-blue-800/50',
                   ].join(' ')}
                 >
                   {f}
@@ -123,7 +119,7 @@ export default function Courses() {
             initial="hidden"
             animate="show"
             exit="exit"
-            className="bg-white"
+            className="bg-white dark:bg-[#0d1425]"
           >
             <div className="py-16 md:py-24">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -142,11 +138,11 @@ export default function Courses() {
                       variants={fadeUp}
                       whileHover={prefersReduced ? {} : { y: -4, scale: 1.02, boxShadow: '0 20px 40px rgba(26,58,143,0.12)' }}
                       whileTap={prefersReduced ? {} : { scale: 0.98 }}
-                      className="bg-[#f5f7fa] p-6 rounded-2xl shadow-[0_4px_20px_rgba(26,58,143,0.07)] border-t-4 border-[#1a3a8f] flex flex-col h-full group"
+                      className="bg-[#f5f7fa] dark:bg-[#16213e] p-6 rounded-2xl shadow-[0_4px_20px_rgba(26,58,143,0.07)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)] border-t-4 border-[#1a3a8f] dark:border-[#3d5fc4] flex flex-col h-full group"
                     >
                       <IconBadge icon={BookOpen} className="mb-4" />
-                      <h3 className="text-lg font-bold text-[#1a1a2e] mb-3 leading-tight">{program.title}</h3>
-                      <p className="text-gray-600 mb-6 flex-1 text-sm">{program.description}</p>
+                      <h3 className="text-lg font-bold text-[#1a1a2e] dark:text-[#e8eaf0] mb-3 leading-tight">{program.title}</h3>
+                      <p className="text-gray-600 dark:text-gray-400 mb-6 flex-1 text-sm leading-relaxed">{program.description}</p>
                       <Button
                         variant="primary" fullWidth
                         to={`/contact?program=${encodeURIComponent(program.title)}`}
@@ -175,7 +171,7 @@ export default function Courses() {
             initial="hidden"
             animate="show"
             exit="exit"
-            className="bg-[#f5f7fa]"
+            className="bg-[#f5f7fa] dark:bg-[#0a0f1e]"
           >
             <div className="py-16 md:py-24">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -194,15 +190,15 @@ export default function Courses() {
                       variants={fadeUp}
                       whileHover={prefersReduced ? {} : { y: -4, scale: 1.02, boxShadow: '0 20px 40px rgba(26,58,143,0.12)' }}
                       whileTap={prefersReduced ? {} : { scale: 0.98 }}
-                      className="bg-white p-8 rounded-2xl shadow-[0_4px_20px_rgba(26,58,143,0.07)] border-t-4 border-[#29b6f6] flex flex-col h-full group relative"
+                      className="bg-white dark:bg-[#16213e] p-8 rounded-2xl shadow-[0_4px_20px_rgba(26,58,143,0.07)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)] border-t-4 border-[#29b6f6] flex flex-col h-full group relative"
                     >
-                      {/* Duration badge — top-right */}
-                      <span className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-blue-100 text-[#1a3a8f] text-xs font-semibold border border-blue-200">
+                      {/* Duration badge */}
+                      <span className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950/50 text-[#1a3a8f] dark:text-blue-300 text-xs font-semibold border border-blue-200 dark:border-blue-800/50">
                         {course.duration}
                       </span>
                       <IconBadge icon={course.icon} className="mb-4" />
-                      <h3 className="text-2xl font-bold text-[#1a1a2e] mb-3 leading-tight">{course.title}</h3>
-                      <p className="text-gray-600 mb-6 flex-1">{course.description}</p>
+                      <h3 className="text-2xl font-bold text-[#1a1a2e] dark:text-[#e8eaf0] mb-3 leading-tight">{course.title}</h3>
+                      <p className="text-gray-600 dark:text-gray-400 mb-6 flex-1 leading-relaxed">{course.description}</p>
                       <Button
                         variant="accent" fullWidth
                         href={`https://wa.me/923126174004?text=${encodeURIComponent(`Hi, I'm interested in enrolling in the ${course.title} course`)}`}
@@ -221,7 +217,7 @@ export default function Courses() {
       </AnimatePresence>
 
       {/* ── Why Our Courses ──────────────────────────────────── */}
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-white dark:bg-[#0d1425]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading title="Why Choose Our Courses?" />
           <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-8" variants={staggerContainer} {...inView()}>
@@ -230,8 +226,8 @@ export default function Courses() {
                 <div className="flex justify-center mb-4">
                   <IconBadge icon={item.icon} />
                 </div>
-                <h3 className="text-xl font-bold text-[#1a1a2e] mb-3 leading-tight">{item.title}</h3>
-                <p className="text-gray-600">{item.text}</p>
+                <h3 className="text-xl font-bold text-[#1a1a2e] dark:text-[#e8eaf0] mb-3 leading-tight">{item.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{item.text}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -245,7 +241,7 @@ export default function Courses() {
           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`, backgroundSize: '128px' }} />
         <motion.div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center" variants={fadeUp} {...inView()}>
           <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4">Ready to Enroll?</h2>
-          <p className="text-blue-100 text-lg mb-8">Contact us today to learn more about our courses and enrollment process</p>
+          <p className="text-blue-100 text-lg mb-8 leading-relaxed">Contact us today to learn more about our courses and enrollment process</p>
           <motion.div whileHover={prefersReduced ? {} : { scale: 1.05 }} whileTap={prefersReduced ? {} : { scale: 0.97 }} className="inline-block">
             <Button variant="secondary" href="https://wa.me/923126174004" target="_blank" rel="noopener noreferrer"
               className="focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2">

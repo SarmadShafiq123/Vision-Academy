@@ -3,16 +3,8 @@
  * Shows an animate-pulse skeleton until the image's onLoad fires,
  * then cross-fades the real image in.
  *
- * Props:
- *  src              – image URL (if falsy or load fails → placeholder shown)
- *  alt              – alt text
- *  className        – applied to the <img> element itself
- *  wrapperClassName – applied to the outer wrapper <div> (use for sizing/layout)
- *  placeholderLabel – text shown inside the fallback placeholder box
- *
- * Fallback behaviour:
- *  - No src / load error → styled placeholder box with label
- *  - Valid src → skeleton pulse until onLoad, then cross-fade to image
+ * Dark mode: skeleton and placeholder use darker gray tones so they
+ * don't look washed-out or mismatched against dark backgrounds.
  */
 import { useState } from 'react';
 
@@ -32,12 +24,12 @@ export default function ImageWithSkeleton({
   if (showPlaceholder) {
     return (
       <div
-        className={`bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center rounded-2xl ${wrapperClassName} ${className}`}
+        className={`bg-gradient-to-br from-gray-200 to-gray-300 dark:from-[#1e2d4a] dark:to-[#16213e] flex items-center justify-center rounded-2xl ${wrapperClassName} ${className}`}
         style={style}
         aria-label={alt}
         role="img"
       >
-        <span className="text-gray-500 text-sm text-center px-4 select-none">
+        <span className="text-gray-500 dark:text-gray-400 text-sm text-center px-4 select-none">
           {placeholderLabel || alt || 'Image'}
         </span>
       </div>
@@ -45,13 +37,12 @@ export default function ImageWithSkeleton({
   }
 
   return (
-    // wrapperClassName lets call-sites control positioning / sizing (e.g. "absolute inset-0")
     <div className={`relative ${wrapperClassName}`} style={style}>
       {/* Skeleton — covers wrapper until image loads */}
       {!loaded && (
         <div
           aria-hidden="true"
-          className="absolute inset-0 animate-pulse bg-gray-200 rounded-2xl"
+          className="absolute inset-0 animate-pulse bg-gray-200 dark:bg-[#1e2d4a] rounded-2xl"
         />
       )}
       <img
