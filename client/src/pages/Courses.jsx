@@ -22,7 +22,7 @@ const academicPrograms = [
 
 const skillCourses = [
   { title: 'Truck Dispatch',        duration: 'Up to 3 Months', icon: Truck,         description: 'Master the logistics industry with professional truck dispatch training. Learn load booking, route planning, and carrier management.' },
-  { title: 'English Spoken Course', duration: 'Up to 2 Months', icon: MessageCircle, description: 'Build confidence in English communication. Develop fluency, pronunciation, and conversational skills for professional success.' },
+  { title: 'English Spoken', duration: 'Up to 2 Months', icon: MessageCircle, description: 'Build confidence in English communication. Develop fluency, pronunciation, and conversational skills for professional success.' },
   { title: 'Web Applications',      duration: 'Up to 6 Months', icon: Monitor,       description: 'Learn modern web development from scratch. Build responsive websites and applications using latest frameworks and technologies.' },
   { title: 'AI & Automation',       duration: 'Up to 3 Months', icon: Bot,           description: 'Explore artificial intelligence and automation tools. Learn to leverage AI for business efficiency and innovation.' },
 ];
@@ -68,7 +68,7 @@ export default function Courses() {
       <section className="py-10 md:py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            className="bg-gradient-to-r from-[#1a3a8f] to-[#29b6f6] text-white rounded-2xl px-8 py-10 text-center relative overflow-hidden"
+            className="bg-gradient-to-r from-[#1a3a8f] to-[#29b6f6] text-white rounded-2xl px-5 py-8 sm:px-8 sm:py-10 text-center relative overflow-hidden"
             variants={staggerContainer}
             {...(prefersReduced ? {} : { initial: 'hidden', animate: 'show' })}
           >
@@ -96,7 +96,7 @@ export default function Courses() {
                   onClick={() => setFilter(f)}
                   aria-pressed={active}
                   className={[
-                    'px-5 py-2 rounded-full text-sm font-semibold transition-colors',
+                    'px-3 sm:px-5 py-2.5 min-h-[44px] rounded-full text-sm font-semibold transition-colors',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2',
                     active
                       ? 'bg-[#1a3a8f] dark:bg-[#3d5fc4] text-white shadow-md'
@@ -129,7 +129,7 @@ export default function Courses() {
                   subtitle="Comprehensive education for matriculation and intermediate levels"
                 />
                 <motion.div
-                  className="grid grid-cols-2 md:grid-cols-4 gap-6 items-stretch"
+                  className="grid grid-cols-1 min-[480px]:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 items-stretch"
                   variants={staggerContainer}
                   {...inView()}
                 >
@@ -139,10 +139,10 @@ export default function Courses() {
                       variants={fadeUp}
                       whileHover={prefersReduced ? {} : { y: -4, scale: 1.02, boxShadow: '0 20px 40px rgba(26,58,143,0.12)' }}
                       whileTap={prefersReduced ? {} : { scale: 0.98 }}
-                      className="bg-[#f5f7fa] dark:bg-[#16213e] p-6 rounded-2xl shadow-[0_4px_20px_rgba(26,58,143,0.07)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)] border-t-4 border-[#1a3a8f] dark:border-[#3d5fc4] flex flex-col h-full group"
+                      className="bg-[#f5f7fa] dark:bg-[#16213e] p-4 sm:p-6 rounded-2xl shadow-[0_4px_20px_rgba(26,58,143,0.07)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)] border-t-4 border-[#1a3a8f] dark:border-[#3d5fc4] flex flex-col h-full group"
                     >
                       <IconBadge icon={BookOpen} className="mb-4" />
-                      <h3 className="text-lg font-bold text-[#1a1a2e] dark:text-[#e8eaf0] mb-3 leading-tight">{program.title}</h3>
+                      <h3 className="text-base sm:text-lg font-bold text-[#1a1a2e] dark:text-[#e8eaf0] mb-3 leading-tight">{program.title}</h3>
                       <p className="text-gray-600 dark:text-gray-400 mb-6 flex-1 text-sm leading-relaxed">{program.description}</p>
                       <MagneticButton className="w-full">
                         <Button
@@ -183,7 +183,7 @@ export default function Courses() {
                   subtitle="Modern skills for the digital age and professional success"
                 />
                 <motion.div
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch"
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 items-stretch"
                   variants={staggerContainer}
                   {...inView()}
                 >
@@ -193,15 +193,15 @@ export default function Courses() {
                       variants={fadeUp}
                       whileHover={prefersReduced ? {} : { y: -4, scale: 1.02, boxShadow: '0 20px 40px rgba(26,58,143,0.12)' }}
                       whileTap={prefersReduced ? {} : { scale: 0.98 }}
-                      className="bg-white dark:bg-[#16213e] p-8 rounded-2xl shadow-[0_4px_20px_rgba(26,58,143,0.07)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)] border-t-4 border-[#29b6f6] flex flex-col h-full group relative"
+                      className="bg-white dark:bg-[#16213e] p-6 sm:p-8 rounded-2xl shadow-[0_4px_20px_rgba(26,58,143,0.07)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)] border-t-4 border-[#29b6f6] flex flex-col h-full group relative"
                     >
-                      {/* Duration badge */}
-                      <span className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950/50 text-[#1a3a8f] dark:text-blue-300 text-xs font-semibold border border-blue-200 dark:border-blue-800/50">
+                      {/* Duration badge — sits top-right; title has matching right padding */}
+                      <span className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950/50 text-[#1a3a8f] dark:text-blue-300 text-xs font-semibold border border-blue-200 dark:border-blue-800/50 whitespace-nowrap">
                         {course.duration}
                       </span>
                       <IconBadge icon={course.icon} className="mb-4" />
-                      <h3 className="text-2xl font-bold text-[#1a1a2e] dark:text-[#e8eaf0] mb-3 leading-tight">{course.title}</h3>
-                      <p className="text-gray-600 dark:text-gray-400 mb-6 flex-1 leading-relaxed">{course.description}</p>
+                      <h3 className="text-xl sm:text-2xl font-bold text-[#1a1a2e] dark:text-[#e8eaf0] mb-3 leading-tight pr-24">{course.title}</h3>
+                      <p className="text-gray-600 dark:text-gray-400 mb-6 flex-1 leading-relaxed text-sm sm:text-base">{course.description}</p>
                       <MagneticButton className="w-full">
                         <Button
                           variant="accent" fullWidth

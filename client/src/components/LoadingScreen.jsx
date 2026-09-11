@@ -9,7 +9,7 @@
  */
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import logo from '../assets/vision.png';
+import logo from '../assets/vision-logo-transparent.png';
 
 const DURATION_MS = 700;
 const SESSION_KEY = 'va_loaded';
@@ -39,10 +39,8 @@ export default function LoadingScreen({ show, onDone }) {
             transition={{ duration: 0.35, ease: 'easeOut' }}
             className="flex flex-col items-center gap-4"
           >
-            {/* Always white-backed so the dark-blue logo is legible in both modes */}
-            <div className="bg-white rounded-2xl px-5 py-3 shadow-md border border-gray-100">
-              <img src={logo} alt="Vision Academy" className="h-16" />
-            </div>
+            {/* Transparent-background logo renders cleanly on both white (light) and dark splash backgrounds */}
+            <img src={logo} alt="Vision Academy" className="h-16" />
             {/* Subtle pulse dot */}
             <motion.div
               animate={{ opacity: [0.4, 1, 0.4] }}

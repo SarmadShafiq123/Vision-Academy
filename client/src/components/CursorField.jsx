@@ -128,9 +128,16 @@ export default function CursorField() {
   const mouseRef = useRef({ x: 0, y: 0 });
   const paused   = useRef(false);
 
+  // Detected once at mount — stable for the device lifetime.
+  // We use useRef (not useState) so it doesn't trigger a re-render and
+  // the value is available synchronously on the first render.
+  const isCoarsePointer = useRef(
+    typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
+  );
+
   // Window-level mouse tracking — normalised to [-1, 1]
   useEffect(() => {
-    if (reduced) return;
+    if (reduced || isCoarsePointer.current) return;
     const onMove = (e) => {
       mouseRef.current = {
         x:   (e.clientX / window.innerWidth)  * 2 - 1,
@@ -147,6 +154,10 @@ export default function CursorField() {
     document.addEventListener('visibilitychange', onVis);
     return () => document.removeEventListener('visibilitychange', onVis);
   }, []);
+
+  // Never render the Three.js canvas on touch/coarse-pointer devices —
+  // there is no cursor to follow and the canvas wastes GPU on a frozen orb.
+  if (isCoarsePointer.current) return null;
 
   return (
     <div

@@ -86,7 +86,7 @@ function FloatingLabelInput({ id, name, label, type = 'text', value, onChange, d
         required={required}
         placeholder=""
         className={[
-          'peer w-full px-4 pt-6 pb-2 border rounded-xl',
+          'peer w-full px-4 pt-6 pb-2 min-h-[44px] border rounded-xl',
           'bg-white dark:bg-[#16213e]',
           'text-[#1a1a2e] dark:text-[#e8eaf0]',
           'disabled:opacity-60 transition-shadow',
@@ -197,7 +197,7 @@ export default function Contact() {
       <section className="py-10 md:py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            className="bg-gradient-to-br from-[#1a3a8f] via-[#16307a] to-[#29b6f6] text-white rounded-2xl px-8 py-10 text-center relative overflow-hidden"
+            className="bg-gradient-to-br from-[#1a3a8f] via-[#16307a] to-[#29b6f6] text-white rounded-2xl px-5 py-8 sm:px-8 sm:py-10 text-center relative overflow-hidden"
             variants={staggerContainer}
             {...(prefersReduced ? {} : { initial: 'hidden', animate: 'show' })}
           >
@@ -220,7 +220,7 @@ export default function Contact() {
 
             {/* ── Contact Form ── */}
             <motion.div variants={staggerContainer} {...inView()}>
-              <motion.h2 variants={fadeUp} className="text-3xl font-bold leading-tight text-[#1a1a2e] dark:text-[#e8eaf0] mb-6">
+              <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold leading-tight text-[#1a1a2e] dark:text-[#e8eaf0] mb-6">
                 Send Us a Message
               </motion.h2>
               <motion.form variants={fadeUp} onSubmit={handleSubmit} className="space-y-6" noValidate>
@@ -278,7 +278,7 @@ export default function Contact() {
 
             {/* ── Contact Info ── */}
             <motion.div variants={staggerContainer} {...inView()}>
-              <motion.h2 variants={fadeUp} className="text-3xl font-bold leading-tight text-[#1a1a2e] dark:text-[#e8eaf0] mb-6">
+              <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold leading-tight text-[#1a1a2e] dark:text-[#e8eaf0] mb-6">
                 Contact Information
               </motion.h2>
               <div className="space-y-4">

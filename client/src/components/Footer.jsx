@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
 import { Phone, MessageCircle, Mail } from 'lucide-react';
-import logo from '../assets/vision.png';
+import logo from '../assets/vision-logo-transparent.png';
 
 const quickLinks = [
   { name: 'Home',     path: '/' },
@@ -9,6 +9,24 @@ const quickLinks = [
   { name: 'Courses',  path: '/courses' },
   { name: 'Contact',  path: '/contact' },
 ];
+
+function FacebookIcon({ size = 18 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  );
+}
+
+function InstagramIcon({ size = 18 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
 
 export default function Footer() {
   const prefersReduced = useReducedMotion();
@@ -26,11 +44,7 @@ export default function Footer() {
 
           {/* Logo + Description */}
           <div>
-            {/*
-             * Logo wrapper: always white-backed so the dark-blue logo is visible
-             * on both the dark footer (light mode) and the darker footer (dark mode).
-             */}
-            <div className="bg-white rounded-xl inline-block px-3 py-2 mb-4">
+            <div className="mb-4">
               <img src={logo} alt="Vision Academy" className="h-20" />
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
@@ -85,24 +99,42 @@ export default function Footer() {
 
             {/* Social Icons */}
             <div className="flex space-x-3 mt-4">
-              <a
+              <motion.a
                 href="https://www.facebook.com/profile.php?id=61594178853129"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Vision Academy on Facebook"
-                className="w-8 h-8 bg-gray-700 dark:bg-[#1e2d4a] rounded-xl flex items-center justify-center text-xs hover:bg-[#29b6f6] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                whileHover={prefersReduced ? {} : { scale: 1.1 }}
+                whileTap={prefersReduced ? {} : { scale: 0.95 }}
+                className={[
+                  'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0',
+                  'bg-blue-100 dark:bg-blue-950/40',
+                  'border border-blue-200 dark:border-blue-800/50',
+                  'text-[#1a3a8f] dark:text-blue-300',
+                  'hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors duration-200',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400',
+                ].join(' ')}
               >
-                FB
-              </a>
-              <a
+                <FacebookIcon size={18} />
+              </motion.a>
+              <motion.a
                 href="https://www.instagram.com/visionacademyyy/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Vision Academy on Instagram"
-                className="w-8 h-8 bg-gray-700 dark:bg-[#1e2d4a] rounded-xl flex items-center justify-center text-xs hover:bg-[#29b6f6] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                whileHover={prefersReduced ? {} : { scale: 1.1 }}
+                whileTap={prefersReduced ? {} : { scale: 0.95 }}
+                className={[
+                  'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0',
+                  'bg-blue-100 dark:bg-blue-950/40',
+                  'border border-blue-200 dark:border-blue-800/50',
+                  'text-[#1a3a8f] dark:text-blue-300',
+                  'hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors duration-200',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400',
+                ].join(' ')}
               >
-                IG
-              </a>
+                <InstagramIcon size={18} />
+              </motion.a>
             </div>
           </div>
         </div>

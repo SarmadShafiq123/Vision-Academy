@@ -4,7 +4,7 @@ import { motion, AnimatePresence, useReducedMotion, useTransform } from 'motion/
 import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLenisScroll } from '../hooks/useLenisScroll';
-import logo from '../assets/vision.png';
+import logo     from '../assets/vision-logo-transparent.png';
 
 const navLinks = [
   { name: 'Home',    path: '/' },
@@ -87,9 +87,7 @@ export default function Navbar() {
             to="/"
             className="flex items-center rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"
           >
-            <div className="rounded-xl px-2 py-1 dark:bg-white">
-              <img src={logo} alt="Vision Academy" className="h-12" />
-            </div>
+            <img src={logo} alt="Vision Academy" className="h-12" />
           </Link>
 
           {/* Desktop Navigation + Theme Toggle */}
@@ -166,7 +164,7 @@ export default function Navbar() {
                       key={link.name}
                       to={link.path}
                       className={[
-                        'block py-2 px-2 rounded-xl font-semibold transition-colors',
+                        'block py-3 px-3 rounded-xl font-semibold transition-colors min-h-[44px] flex items-center',
                         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2',
                         isActive
                           ? 'text-[#1a3a8f] dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40'

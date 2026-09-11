@@ -33,6 +33,12 @@ export default function MagneticButton({
   const ref          = useRef(null);
   const prefersReduced = useReducedMotion();
 
+  // On touch/coarse-pointer devices the magnetic effect is meaningless
+  // (no hover state). Detect once and skip all motion setup.
+  const isCoarsePointer = useRef(
+    typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
+  );
+
   const springCfg = prefersReduced
     ? { stiffness: 9999, damping: 100 }  // instant snap when motion reduced
     : { stiffness: 220, damping: 18, mass: 0.6 };
@@ -41,7 +47,7 @@ export default function MagneticButton({
   const y = useSpring(0, springCfg);
 
   const onMouseMove = useCallback((e) => {
-    if (disabled || !ref.current) return;
+    if (disabled || isCoarsePointer.current || !ref.current) return;
     const rect   = ref.current.getBoundingClientRect();
     const cx     = rect.left + rect.width  / 2;
     const cy     = rect.top  + rect.height / 2;

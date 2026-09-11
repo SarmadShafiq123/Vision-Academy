@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/vision.png';
+import logo from '../assets/vision-logo-transparent.png';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -25,9 +25,7 @@ export default function NotFound() {
       >
         {/* Logo — always white-backed so dark-blue logo stays readable */}
         <motion.div variants={fadeUp} className="flex justify-center mb-8">
-          <div className="bg-white rounded-xl px-4 py-2 shadow-md border border-gray-100 inline-block">
-            <img src={logo} alt="Vision Academy" className="h-14" />
-          </div>
+          <img src={logo} alt="Vision Academy" className="h-14" />
         </motion.div>
 
         {/* 404 */}

@@ -66,7 +66,7 @@ export default function Home() {
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section
         ref={heroSectionRef}
-        className="relative text-white py-16 md:py-24 overflow-hidden"
+        className="relative text-white py-12 md:py-16 overflow-hidden"
         style={{ background: 'linear-gradient(135deg, #1a3a8f 0%, #1e44a8 50%, #29b6f6 100%)' }}
       >
         <div aria-hidden="true" className="absolute inset-0 opacity-[0.04]"
@@ -82,14 +82,14 @@ export default function Home() {
               {...heroMotion}
             >
               <motion.h1 variants={fadeUp}
-                className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight">
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight tracking-tight">
                 Empowering Minds,<br />Shaping Futures
               </motion.h1>
-              <motion.p variants={fadeUp} className="text-lg md:text-xl mb-8 text-blue-100 font-normal leading-relaxed">
+              <motion.p variants={fadeUp} className="text-base md:text-lg mb-6 text-blue-100 font-normal leading-relaxed max-w-lg">
                 Join Vision Academy for quality education that combines academic excellence
                 with practical skills for tomorrow's success.
               </motion.p>
-              <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4">
+              <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-3">
                 <MagneticButton>
                   <Button variant="secondary" to="/courses">Explore Courses</Button>
                 </MagneticButton>
@@ -101,7 +101,7 @@ export default function Home() {
 
             {/* Hero image — parallax */}
             <motion.div
-              className="relative h-80 rounded-2xl overflow-hidden shadow-2xl"
+              className="relative h-64 md:h-72 rounded-2xl overflow-hidden shadow-2xl"
               variants={fadeUp} {...heroMotion}
               transition={{ duration: 0.5, delay: prefersReduced ? 0 : 0.2 }}
             >

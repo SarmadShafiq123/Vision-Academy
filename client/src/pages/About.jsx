@@ -36,7 +36,7 @@ export default function About() {
       <section className="py-10 md:py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            className="bg-gradient-to-r from-[#1a3a8f] to-[#29b6f6] text-white rounded-xl px-8 py-10 text-center relative overflow-hidden"
+            className="bg-gradient-to-r from-[#1a3a8f] to-[#29b6f6] text-white rounded-2xl px-5 py-8 sm:px-8 sm:py-10 text-center relative overflow-hidden"
             variants={staggerContainer}
             {...(prefersReduced ? {} : { initial: 'hidden', animate: 'show' })}
           >
@@ -72,14 +72,14 @@ export default function About() {
               </motion.h2>
               <motion.div variants={fadeUp} className="space-y-6">
                 <div>
-                  <h3 className="text-2xl font-bold text-[#1a3a8f] dark:text-blue-400 mb-3">Mission</h3>
+                  <h3 className="text-2xl md:text-3xl font-bold text-[#1a3a8f] dark:text-blue-400 mb-3">Mission</h3>
                   <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
                     To provide accessible, high-quality education that empowers students with both
                     academic knowledge and practical skills needed to thrive in an ever-evolving world.
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-[#1a3a8f] dark:text-blue-400 mb-3">Vision</h3>
+                  <h3 className="text-2xl md:text-3xl font-bold text-[#1a3a8f] dark:text-blue-400 mb-3">Vision</h3>
                   <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
                     To be the leading educational institution recognized for excellence in both
                     traditional academics and modern skill development, producing graduates who are
