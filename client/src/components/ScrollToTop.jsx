@@ -1,43 +1,32 @@
-/**
- * ScrollToTop
- * Floating circular button, bottom-right corner, that fades+scales in
- * once the user scrolls more than 400px, then smooth-scrolls to top via Lenis.
- *
- * Visibility is driven by Lenis's scroll event (same source as Lenis itself uses),
- * falling back to native window scroll if Lenis isn't ready.
- */
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { ArrowUp } from 'lucide-react';
-import { useLenis } from '../context/LenisContext';
+import { useLenisInstance } from '../hooks/useLenisInstance';
+
+const SCROLL_THRESHOLD_PX = 400;
+const SCROLL_DURATION_S   = 1;
 
 export default function ScrollToTop() {
-  const [visible, setVisible] = useState(false);
-  const prefersReduced        = useReducedMotion();
-  const lenisRef              = useLenis();
+  const [visible, setVisible]  = useState(false);
+  const prefersReduced         = useReducedMotion();
+  const lenis                  = useLenisInstance();
 
   useEffect(() => {
-    const lenis = lenisRef?.current;
-
     if (lenis) {
-      const onScroll = ({ scroll }) => setVisible(scroll > 400);
+      const onScroll = ({ scroll }) => setVisible(scroll > SCROLL_THRESHOLD_PX);
       lenis.on('scroll', onScroll);
       return () => lenis.off('scroll', onScroll);
     }
 
-    // Fallback: native scroll
-    const onNativeScroll = () => setVisible(window.scrollY > 400);
+    const onNativeScroll = () => setVisible(window.scrollY > SCROLL_THRESHOLD_PX);
     window.addEventListener('scroll', onNativeScroll, { passive: true });
     return () => window.removeEventListener('scroll', onNativeScroll);
-  // lenisRef is a stable ref — only re-run if identity changes
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lenisRef]);
+  }, [lenis]);
 
   const handleClick = () => {
-    const lenis = lenisRef?.current;
     if (lenis) {
       lenis.scrollTo(0, {
-        duration: prefersReduced ? 0 : 1,
+        duration: prefersReduced ? 0 : SCROLL_DURATION_S,
         easing: (t) => 1 - Math.pow(1 - t, 3),
       });
     } else {

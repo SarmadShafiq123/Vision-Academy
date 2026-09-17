@@ -9,16 +9,26 @@ const EMAILJS_SERVICE_ID  = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const EMAILJS_PUBLIC_KEY  = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
+const FADE_UP_DURATION_S = 0.45;
+const FADE_UP_Y_OFFSET   = 30;
+const STAGGER_DELAY_S    = 0.1;
+const VIEWPORT_MARGIN    = '-60px';
+const FEEDBACK_ENTER_Y   = -6;
+const CTA_HOVER_SCALE    = 1.05;
+const CTA_TAP_SCALE      = 0.97;
+const MAP_HEIGHT_PX      = 350;
+
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.45, ease: 'easeOut' } },
-};
-const staggerContainer = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
+  hidden: { opacity: 0, y: FADE_UP_Y_OFFSET },
+  show:   { opacity: 1, y: 0, transition: { duration: FADE_UP_DURATION_S, ease: 'easeOut' } },
 };
 
-const contactItems = [
+const staggerContainer = {
+  hidden: {},
+  show:   { transition: { staggerChildren: STAGGER_DELAY_S } },
+};
+
+const CONTACT_ITEMS = [
   {
     icon: Phone,
     title: 'Phone',
@@ -65,12 +75,10 @@ const contactItems = [
   },
 ];
 
-// ─── Floating label field ─────────────────────────────────────────────────────
-
 function FloatingLabelInput({ id, name, label, type = 'text', value, onChange, disabled, required }) {
-  const [focused, setFocused] = useState(false);
-  const prefersReduced        = useReducedMotion();
-  const floated               = focused || value.length > 0;
+  const [focused, setFocused]  = useState(false);
+  const prefersReduced         = useReducedMotion();
+  const floated                = focused || value.length > 0;
 
   return (
     <div className="relative">
@@ -114,9 +122,9 @@ function FloatingLabelInput({ id, name, label, type = 'text', value, onChange, d
 }
 
 function FloatingLabelTextarea({ id, name, label, value, onChange, disabled, required, rows }) {
-  const [focused, setFocused] = useState(false);
-  const prefersReduced        = useReducedMotion();
-  const floated               = focused || value.length > 0;
+  const [focused, setFocused]  = useState(false);
+  const prefersReduced         = useReducedMotion();
+  const floated                = focused || value.length > 0;
 
   return (
     <div className="relative">
@@ -159,8 +167,6 @@ function FloatingLabelTextarea({ id, name, label, value, onChange, disabled, req
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
-
 export default function Contact() {
   const prefersReduced = useReducedMotion();
   const [formData, setFormData]       = useState({ name: '', email: '', message: '' });
@@ -169,7 +175,7 @@ export default function Contact() {
   const inView = () =>
     prefersReduced
       ? {}
-      : { initial: 'hidden', whileInView: 'show', viewport: { once: true, margin: '-60px' } };
+      : { initial: 'hidden', whileInView: 'show', viewport: { once: true, margin: VIEWPORT_MARGIN } };
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -193,7 +199,6 @@ export default function Contact() {
 
   return (
     <div>
-      {/* ── Page Header ──────────────────────────────────────── */}
       <section className="py-10 md:py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -213,18 +218,15 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* ── Form + Info ──────────────────────────────────────── */}
       <section className="py-16 md:py-24 bg-white dark:bg-[#0d1425]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
-            {/* ── Contact Form ── */}
             <motion.div variants={staggerContainer} {...inView()}>
               <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold leading-tight text-[#1a1a2e] dark:text-[#e8eaf0] mb-6">
                 Send Us a Message
               </motion.h2>
               <motion.form variants={fadeUp} onSubmit={handleSubmit} className="space-y-6" noValidate>
-
                 <FloatingLabelInput
                   id="name" name="name" label="Your Name"
                   value={formData.name} onChange={handleChange}
@@ -241,13 +243,12 @@ export default function Contact() {
                   disabled={submitState === 'sending'} required rows={6}
                 />
 
-                {/* Inline feedback */}
                 <AnimatePresence mode="wait">
                   {submitState === 'success' && (
                     <motion.p
                       key="success"
                       role="status"
-                      initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                      initial={{ opacity: 0, y: FEEDBACK_ENTER_Y }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                       transition={{ duration: 0.25 }}
                       className="text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/50 rounded-xl px-4 py-3 text-sm"
                     >
@@ -258,7 +259,7 @@ export default function Contact() {
                     <motion.p
                       key="error"
                       role="alert"
-                      initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                      initial={{ opacity: 0, y: FEEDBACK_ENTER_Y }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                       transition={{ duration: 0.25 }}
                       className="text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50 rounded-xl px-4 py-3 text-sm"
                     >
@@ -276,13 +277,12 @@ export default function Contact() {
               </motion.form>
             </motion.div>
 
-            {/* ── Contact Info ── */}
             <motion.div variants={staggerContainer} {...inView()}>
               <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold leading-tight text-[#1a1a2e] dark:text-[#e8eaf0] mb-6">
                 Contact Information
               </motion.h2>
               <div className="space-y-4">
-                {contactItems.map((item) => (
+                {CONTACT_ITEMS.map((item) => (
                   <motion.div
                     key={item.title}
                     variants={fadeUp}
@@ -305,7 +305,6 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* ── Map ──────────────────────────────────────────────── */}
       <section className="py-16 md:py-24 bg-[#f5f7fa] dark:bg-[#0a0f1e]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.h2
@@ -321,7 +320,7 @@ export default function Contact() {
             <iframe
               title="Vision Academy Location"
               src="https://www.google.com/maps?q=32.1551,74.1788&z=17&output=embed"
-              width="100%" height="350"
+              width="100%" height={MAP_HEIGHT_PX}
               style={{ border: 0, display: 'block' }}
               allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"
             />
@@ -329,7 +328,6 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────────── */}
       <section className="py-12 md:py-16 relative overflow-hidden text-white"
         style={{ background: 'linear-gradient(135deg, #1a3a8f 0%, #16307a 50%, #29b6f6 100%)' }}>
         <div aria-hidden="true" className="absolute inset-0 opacity-[0.04]"
@@ -337,7 +335,7 @@ export default function Contact() {
         <motion.div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center" variants={fadeUp} {...inView()}>
           <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4">Visit Us Today</h2>
           <p className="text-blue-100 text-lg mb-8 leading-relaxed">We'd love to meet you in person and show you around our campus</p>
-          <motion.div whileHover={prefersReduced ? {} : { scale: 1.05 }} whileTap={prefersReduced ? {} : { scale: 0.97 }} className="inline-block">
+          <motion.div whileHover={prefersReduced ? {} : { scale: CTA_HOVER_SCALE }} whileTap={prefersReduced ? {} : { scale: CTA_TAP_SCALE }} className="inline-block">
             <Button variant="secondary" href="https://wa.me/923126174004" target="_blank" rel="noopener noreferrer"
               className="focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2">
               <span className="text-2xl mr-3">💬</span>

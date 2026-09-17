@@ -2,23 +2,37 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useReducedMotion, useTransform } from 'motion/react';
 import { Sun, Moon } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectTheme, toggleTheme } from '../store/slices/themeSlice';
 import { useLenisScroll } from '../hooks/useLenisScroll';
-import logo     from '../assets/vision-logo-transparent.png';
+import logo from '../assets/vision-logo-transparent.png';
 
-const navLinks = [
+const NAV_LINKS = [
   { name: 'Home',    path: '/' },
   { name: 'About',   path: '/about' },
   { name: 'Courses', path: '/courses' },
   { name: 'Contact', path: '/contact' },
 ];
 
+const SCROLL_GLASS_RANGE_PX      = [0, 120];
+const SCROLL_BLUR_MAX_PX         = 14;
+const SCROLL_BG_OPACITY_DARK     = [1, 0.88];
+const SCROLL_BG_OPACITY_LIGHT    = [1, 0.82];
+const SCROLL_SHADOW_OPACITY      = [0.03, 0.14];
+const NAV_ENTER_OFFSET_PX        = -64;
+const NAV_ENTER_DURATION_S       = 0.4;
+const UNDERLINE_SPRING_STIFFNESS = 380;
+const UNDERLINE_SPRING_DAMPING   = 30;
+const MOBILE_MENU_DURATION_S     = 0.25;
+
 function ThemeToggle({ className = '' }) {
-  const { theme, toggleTheme } = useTheme();
-  const isDark = theme === 'dark';
+  const theme    = useSelector(selectTheme);
+  const dispatch = useDispatch();
+  const isDark   = theme === 'dark';
+
   return (
     <button
-      onClick={toggleTheme}
+      onClick={() => dispatch(toggleTheme())}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       className={[
         'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
@@ -38,23 +52,24 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location                    = useLocation();
   const prefersReduced              = useReducedMotion();
-  const { theme }                   = useTheme();
+  const theme                       = useSelector(selectTheme);
   const isDark                      = theme === 'dark';
 
-  // ── Scroll-linked glass effect ──────────────────────────────────────────
   const { scrollY } = useLenisScroll();
 
-  // All transforms derived at hook-level — never inside JSX
-  const bgOpacity    = useTransform(scrollY, [0, 120], isDark ? [1, 0.88] : [1, 0.82]);
-  const blurPx       = useTransform(scrollY, [0, 120], [0, 14]);
-  const shadowOp     = useTransform(scrollY, [0, 120], [0.03, 0.14]);
+  const bgOpacity = useTransform(
+    scrollY,
+    SCROLL_GLASS_RANGE_PX,
+    isDark ? SCROLL_BG_OPACITY_DARK : SCROLL_BG_OPACITY_LIGHT,
+  );
+  const blurPx   = useTransform(scrollY, SCROLL_GLASS_RANGE_PX, [0, SCROLL_BLUR_MAX_PX]);
+  const shadowOp = useTransform(scrollY, SCROLL_GLASS_RANGE_PX, SCROLL_SHADOW_OPACITY);
 
-  // Composed string MotionValues for style props
-  const bgColorMV    = useTransform(bgOpacity,  (v) =>
+  const bgColorMV  = useTransform(bgOpacity, (v) =>
     isDark ? `rgba(13,20,37,${v})` : `rgba(255,255,255,${v})`
   );
-  const backdropMV   = useTransform(blurPx,     (v) => `blur(${v}px)`);
-  const shadowMV     = useTransform(shadowOp,   (v) =>
+  const backdropMV = useTransform(blurPx,    (v) => `blur(${v}px)`);
+  const shadowMV   = useTransform(shadowOp,  (v) =>
     isDark
       ? `0 4px 24px rgba(0,0,0,${v * 2})`
       : `0 4px 24px rgba(26,58,143,${v})`
@@ -63,11 +78,10 @@ export default function Navbar() {
   return (
     <motion.nav
       className="sticky top-0 z-50 overflow-hidden"
-      initial={prefersReduced ? false : { y: -64, opacity: 0 }}
+      initial={prefersReduced ? false : { y: NAV_ENTER_OFFSET_PX, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.4, ease: 'easeOut' }}
+      transition={{ duration: NAV_ENTER_DURATION_S, ease: 'easeOut' }}
     >
-      {/* Animated glass background layer — position:absolute so it doesn't affect layout */}
       <motion.div
         aria-hidden="true"
         className="absolute inset-0 pointer-events-none"
@@ -82,7 +96,6 @@ export default function Navbar() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
 
-          {/* Logo */}
           <Link
             to="/"
             className="flex items-center rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"
@@ -90,9 +103,8 @@ export default function Navbar() {
             <img src={logo} alt="Vision Academy" className="h-12" />
           </Link>
 
-          {/* Desktop Navigation + Theme Toggle */}
           <div className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => {
+            {NAV_LINKS.map((link) => {
               const isActive = location.pathname === link.path;
               return (
                 <Link
@@ -111,7 +123,11 @@ export default function Navbar() {
                     <motion.span
                       layoutId="nav-underline"
                       className="absolute left-0 right-0 bottom-0 h-0.5 bg-[#1a3a8f] dark:bg-blue-300 rounded-full"
-                      transition={prefersReduced ? { duration: 0 } : { type: 'spring', stiffness: 380, damping: 30 }}
+                      transition={
+                        prefersReduced
+                          ? { duration: 0 }
+                          : { type: 'spring', stiffness: UNDERLINE_SPRING_STIFFNESS, damping: UNDERLINE_SPRING_DAMPING }
+                      }
                     />
                   )}
                 </Link>
@@ -120,7 +136,6 @@ export default function Navbar() {
             <ThemeToggle />
           </div>
 
-          {/* Mobile: theme toggle + hamburger */}
           <div className="md:hidden flex items-center gap-2">
             <ThemeToggle />
             <button
@@ -143,7 +158,6 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
@@ -154,10 +168,10 @@ export default function Navbar() {
               initial={prefersReduced ? { opacity: 0 } : { height: 0, opacity: 0 }}
               animate={prefersReduced ? { opacity: 1 } : { height: 'auto', opacity: 1 }}
               exit={prefersReduced   ? { opacity: 0 } : { height: 0, opacity: 0 }}
-              transition={{ duration: 0.25, ease: 'easeInOut' }}
+              transition={{ duration: MOBILE_MENU_DURATION_S, ease: 'easeInOut' }}
             >
               <div className="pb-4 space-y-1">
-                {navLinks.map((link) => {
+                {NAV_LINKS.map((link) => {
                   const isActive = location.pathname === link.path;
                   return (
                     <Link

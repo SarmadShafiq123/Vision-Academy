@@ -2,14 +2,18 @@ import { motion, useReducedMotion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/vision-logo-transparent.png';
 
+const FADE_UP_DURATION_S = 0.45;
+const FADE_UP_Y_OFFSET   = 30;
+const STAGGER_DELAY_S    = 0.1;
+
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.45, ease: 'easeOut' } },
+  hidden: { opacity: 0, y: FADE_UP_Y_OFFSET },
+  show:   { opacity: 1, y: 0, transition: { duration: FADE_UP_DURATION_S, ease: 'easeOut' } },
 };
 
 const stagger = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
+  show:   { transition: { staggerChildren: STAGGER_DELAY_S } },
 };
 
 export default function NotFound() {
@@ -23,12 +27,10 @@ export default function NotFound() {
         initial={prefersReduced ? false : 'hidden'}
         animate="show"
       >
-        {/* Logo — always white-backed so dark-blue logo stays readable */}
         <motion.div variants={fadeUp} className="flex justify-center mb-8">
           <img src={logo} alt="Vision Academy" className="h-14" />
         </motion.div>
 
-        {/* 404 */}
         <motion.p
           variants={fadeUp}
           className="text-8xl font-semibold text-[#1a3a8f] dark:text-[#3d5fc4] leading-none mb-4"
@@ -36,7 +38,6 @@ export default function NotFound() {
           404
         </motion.p>
 
-        {/* Heading */}
         <motion.h1
           variants={fadeUp}
           className="text-2xl md:text-3xl font-semibold text-[#1a1a2e] dark:text-[#e8eaf0] mb-4"
@@ -44,13 +45,11 @@ export default function NotFound() {
           Page Not Found
         </motion.h1>
 
-        {/* Message */}
         <motion.p variants={fadeUp} className="text-gray-600 dark:text-gray-400 text-lg mb-8 leading-relaxed">
           The page you're looking for doesn't exist or has been moved.
           Let's get you back on track.
         </motion.p>
 
-        {/* CTA */}
         <motion.div variants={fadeUp}>
           <Link
             to="/"

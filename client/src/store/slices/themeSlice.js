@@ -6,8 +6,8 @@ function readPersistedTheme() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved === 'dark' || saved === 'light') return saved;
-  } catch {
-    /* ignore */
+  } catch (_e) {
+    void _e;
   }
   try {
     if (
@@ -17,8 +17,8 @@ function readPersistedTheme() {
     ) {
       return 'dark';
     }
-  } catch {
-    /* ignore */
+  } catch (_e) {
+    void _e;
   }
   return 'light';
 }

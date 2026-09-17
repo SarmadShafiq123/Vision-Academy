@@ -1,11 +1,3 @@
-/**
- * ImageWithSkeleton
- * Shows an animate-pulse skeleton until the image's onLoad fires,
- * then cross-fades the real image in.
- *
- * Dark mode: skeleton and placeholder use darker gray tones so they
- * don't look washed-out or mismatched against dark backgrounds.
- */
 import { useState } from 'react';
 
 export default function ImageWithSkeleton({
@@ -38,7 +30,6 @@ export default function ImageWithSkeleton({
 
   return (
     <div className={`relative ${wrapperClassName}`} style={style}>
-      {/* Skeleton — covers wrapper until image loads */}
       {!loaded && (
         <div
           aria-hidden="true"

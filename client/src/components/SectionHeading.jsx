@@ -2,8 +2,8 @@ import { motion, useReducedMotion } from 'motion/react';
 
 export default function SectionHeading({ title, subtitle, centered = true, className = '' }) {
   const prefersReduced = useReducedMotion();
-  const alignClass  = centered ? 'text-center' : '';
-  const marginClass = centered ? 'mb-16' : 'mb-8';
+  const alignClass     = centered ? 'text-center' : '';
+  const marginClass    = centered ? 'mb-16' : 'mb-8';
 
   return (
     <motion.div

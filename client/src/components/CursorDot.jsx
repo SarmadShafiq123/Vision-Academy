@@ -1,47 +1,41 @@
-/**
- * CursorDot
- *
- * A small (8px) brand-blue dot that tracks the exact cursor position
- * with near-zero lag. Separate from the Three.js glow orb — the orb
- * trails with a lerp; this dot is pixel-precise.
- *
- * Behaviours:
- *  - Scales to 2× and switches to an outline ring on hover over any
- *    interactive element (button, a, [role="button"], input, textarea,
- *    select, label).
- *  - pointer-events: none — never blocks clicks.
- *  - Only active on pointer:fine devices (mouse). Touch/stylus devices
- *    get normal cursors. Detected once on mount via matchMedia.
- *  - prefers-reduced-motion → dot still renders (it's not scroll/motion-
- *    sickness-inducing) but scale spring uses duration:0.
- *  - Hides when cursor leaves the viewport.
- */
 import { useEffect, useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring, useReducedMotion } from 'motion/react';
 
-// Interactive elements that trigger the "hover" enlarged state
-const INTERACTIVE = 'a, button, [role="button"], input, textarea, select, label, [data-cursor-hover]';
+const INTERACTIVE_SELECTOR =
+  'a, button, [role="button"], input, textarea, select, label, [data-cursor-hover]';
+
+const DOT_SIZE_PX            = 8;
+const DOT_HOVER_SCALE        = 2;
+const DOT_IDLE_COLOR         = '#29b6f6';
+const DOT_HOVER_BORDER       = '2px solid #29b6f6';
+const DOT_IDLE_BORDER        = '2px solid transparent';
+const SPRING_STIFFNESS       = 800;
+const SPRING_DAMPING         = 60;
+const SPRING_MASS            = 0.4;
+const HOVER_SPRING_STIFFNESS = 400;
+const HOVER_SPRING_DAMPING   = 28;
+const HOVER_SPRING_MASS      = 0.5;
+const INITIAL_OFFSCREEN      = -100;
+
+function isFinePonterDevice() {
+  return typeof window !== 'undefined' && window.matchMedia('(pointer: fine)').matches;
+}
 
 export default function CursorDot() {
   const prefersReduced = useReducedMotion();
 
-  // Only show on fine-pointer (mouse) devices
-  const [isFinePonter, setIsFinePointer] = useState(false);
-  const [visible,      setVisible]       = useState(false);
-  const [hovered,      setHovered]       = useState(false);
+  const [isFinePointer, setIsFinePointer] = useState(false);
+  const [visible,       setVisible]       = useState(false);
+  const [hovered,       setHovered]       = useState(false);
 
-  // Raw mouse position as MotionValues
-  const mouseX = useMotionValue(-100);
-  const mouseY = useMotionValue(-100);
+  const mouseX = useMotionValue(INITIAL_OFFSCREEN);
+  const mouseY = useMotionValue(INITIAL_OFFSCREEN);
 
-  // Spring config — very stiff = near-instant follow
-  const springCfg = { stiffness: 800, damping: 60, mass: 0.4 };
-  const dotX = useSpring(mouseX, springCfg);
-  const dotY = useSpring(mouseY, springCfg);
+  const dotX = useSpring(mouseX, { stiffness: SPRING_STIFFNESS, damping: SPRING_DAMPING, mass: SPRING_MASS });
+  const dotY = useSpring(mouseY, { stiffness: SPRING_STIFFNESS, damping: SPRING_DAMPING, mass: SPRING_MASS });
 
   useEffect(() => {
-    // Check pointer capability once
-    const fine = window.matchMedia('(pointer: fine)').matches;
+    const fine = isFinePonterDevice();
     setIsFinePointer(fine);
     if (!fine) return;
 
@@ -49,10 +43,8 @@ export default function CursorDot() {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
       setVisible(true);
-
-      // Check if hovering over an interactive element
       const el = document.elementFromPoint(e.clientX, e.clientY);
-      setHovered(!!(el && el.closest(INTERACTIVE)));
+      setHovered(!!(el && el.closest(INTERACTIVE_SELECTOR)));
     };
 
     const onLeave = () => setVisible(false);
@@ -63,54 +55,38 @@ export default function CursorDot() {
       window.removeEventListener('mousemove', onMove);
       document.documentElement.removeEventListener('mouseleave', onLeave);
     };
-  // mouseX/mouseY are stable MotionValues — safe to omit from deps
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [mouseX, mouseY]);
 
-  if (!isFinePonter) return null;
+  if (!isFinePointer) return null;
 
   return (
     <motion.div
       aria-hidden="true"
-      style={{
-        x: dotX,
-        y: dotY,
-        position:      'fixed',
-        top:           0,
-        left:          0,
-        pointerEvents: 'none',
-        zIndex:        99999,
-        // Offset so the dot centre aligns with the cursor tip
-        translateX:    '-50%',
-        translateY:    '-50%',
-      }}
       animate={{
-        opacity: visible ? 1 : 0,
-        scale:   hovered ? 2 : 1,
-        // Hovered: outline ring; idle: filled dot
-        backgroundColor: hovered ? 'transparent' : '#29b6f6',
-        border:          hovered ? '2px solid #29b6f6' : '2px solid transparent',
+        opacity:         visible ? 1 : 0,
+        scale:           hovered ? DOT_HOVER_SCALE : 1,
+        backgroundColor: hovered ? 'transparent' : DOT_IDLE_COLOR,
+        border:          hovered ? DOT_HOVER_BORDER : DOT_IDLE_BORDER,
       }}
       transition={
         prefersReduced
           ? { duration: 0 }
-          : { type: 'spring', stiffness: 400, damping: 28, mass: 0.5 }
+          : { type: 'spring', stiffness: HOVER_SPRING_STIFFNESS, damping: HOVER_SPRING_DAMPING, mass: HOVER_SPRING_MASS }
       }
       style={{
-        x: dotX,
-        y: dotY,
-        position:        'fixed',
-        top:             0,
-        left:            0,
-        width:           8,
-        height:          8,
-        borderRadius:    '50%',
-        pointerEvents:   'none',
-        zIndex:          99999,
-        translateX:      '-50%',
-        translateY:      '-50%',
-        // will-change gives the browser a hint to composite this layer
-        willChange:      'transform',
+        x:             dotX,
+        y:             dotY,
+        position:      'fixed',
+        top:           0,
+        left:          0,
+        width:         DOT_SIZE_PX,
+        height:        DOT_SIZE_PX,
+        borderRadius:  '50%',
+        pointerEvents: 'none',
+        zIndex:        99999,
+        translateX:    '-50%',
+        translateY:    '-50%',
+        willChange:    'transform',
       }}
     />
   );

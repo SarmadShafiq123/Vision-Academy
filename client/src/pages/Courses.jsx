@@ -9,7 +9,7 @@ import SectionHeading from '../components/SectionHeading';
 import IconBadge from '../components/IconBadge';
 import MagneticButton from '../components/MagneticButton';
 
-const academicPrograms = [
+const ACADEMIC_PROGRAMS = [
   { title: 'Class 9',             description: 'Foundation year with comprehensive curriculum for all subjects.' },
   { title: 'Class 10',            description: 'Matriculation preparation with focus on board exam success.' },
   { title: 'Class 11',            description: 'Intermediate first year across Science, Arts, and Commerce streams.' },
@@ -20,35 +20,48 @@ const academicPrograms = [
   { title: 'A Levels',            description: 'Cambridge A Level preparation with in-depth subject coverage for university readiness.' },
 ];
 
-const skillCourses = [
-  { title: 'Truck Dispatch',        duration: 'Up to 3 Months', icon: Truck,         description: 'Master the logistics industry with professional truck dispatch training. Learn load booking, route planning, and carrier management.' },
-  { title: 'English Spoken', duration: 'Up to 2 Months', icon: MessageCircle, description: 'Build confidence in English communication. Develop fluency, pronunciation, and conversational skills for professional success.' },
-  { title: 'Web Applications',      duration: 'Up to 6 Months', icon: Monitor,       description: 'Learn modern web development from scratch. Build responsive websites and applications using latest frameworks and technologies.' },
-  { title: 'AI & Automation',       duration: 'Up to 3 Months', icon: Bot,           description: 'Explore artificial intelligence and automation tools. Learn to leverage AI for business efficiency and innovation.' },
+const SKILL_COURSES = [
+  { title: 'Truck Dispatch',  duration: 'Up to 3 Months', icon: Truck,         description: 'Master the logistics industry with professional truck dispatch training. Learn load booking, route planning, and carrier management.' },
+  { title: 'English Spoken',  duration: 'Up to 2 Months', icon: MessageCircle, description: 'Build confidence in English communication. Develop fluency, pronunciation, and conversational skills for professional success.' },
+  { title: 'Web Applications', duration: 'Up to 6 Months', icon: Monitor,       description: 'Learn modern web development from scratch. Build responsive websites and applications using latest frameworks and technologies.' },
+  { title: 'AI & Automation',  duration: 'Up to 3 Months', icon: Bot,           description: 'Explore artificial intelligence and automation tools. Learn to leverage AI for business efficiency and innovation.' },
 ];
 
-const whyItems = [
+const WHY_ITEMS = [
   { icon: GraduationCap, title: 'Expert Instructors', text: 'Learn from experienced professionals with industry expertise.' },
   { icon: Target,        title: 'Practical Focus',    text: 'Hands-on training with real-world applications and projects.' },
   { icon: Award,         title: 'Certification',      text: 'Receive recognised certificates upon course completion.' },
 ];
 
+const FILTERS = ['All', 'Academic Programs', 'Skill Courses'];
+
+const FADE_UP_DURATION_S = 0.45;
+const FADE_UP_Y_OFFSET   = 30;
+const STAGGER_DELAY_S    = 0.1;
+const SECTION_ENTER_Y    = 16;
+const SECTION_EXIT_Y     = -8;
+const CARD_HOVER_Y       = -4;
+const CARD_HOVER_SCALE   = 1.02;
+const CARD_HOVER_SHADOW  = '0 20px 40px rgba(26,58,143,0.12)';
+const CTA_HOVER_SCALE    = 1.05;
+const CTA_TAP_SCALE      = 0.97;
+const VIEWPORT_MARGIN    = '-60px';
+
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.45, ease: 'easeOut' } },
+  hidden: { opacity: 0, y: FADE_UP_Y_OFFSET },
+  show:   { opacity: 1, y: 0, transition: { duration: FADE_UP_DURATION_S, ease: 'easeOut' } },
 };
+
 const staggerContainer = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
+  show:   { transition: { staggerChildren: STAGGER_DELAY_S } },
 };
 
 const sectionVariants = {
-  hidden: { opacity: 0, y: 16 },
-  show:   { opacity: 1, y: 0,  transition: { duration: 0.30, ease: 'easeOut' } },
-  exit:   { opacity: 0, y: -8, transition: { duration: 0.20, ease: 'easeIn'  } },
+  hidden: { opacity: 0, y: SECTION_ENTER_Y },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.30, ease: 'easeOut' } },
+  exit:   { opacity: 0, y: SECTION_EXIT_Y,  transition: { duration: 0.20, ease: 'easeIn'  } },
 };
-
-const FILTERS = ['All', 'Academic Programs', 'Skill Courses'];
 
 export default function Courses() {
   const prefersReduced = useReducedMotion();
@@ -60,11 +73,10 @@ export default function Courses() {
   const inView = () =>
     prefersReduced
       ? {}
-      : { initial: 'hidden', whileInView: 'show', viewport: { once: true, margin: '-60px' } };
+      : { initial: 'hidden', whileInView: 'show', viewport: { once: true, margin: VIEWPORT_MARGIN } };
 
   return (
     <div>
-      {/* ── Page Header ──────────────────────────────────────── */}
       <section className="py-10 md:py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -84,7 +96,6 @@ export default function Courses() {
         </div>
       </section>
 
-      {/* ── Filter Toggle ─────────────────────────────────────── */}
       <section className="pt-10 pb-2 bg-white dark:bg-[#0d1425]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap gap-2 justify-center" role="group" aria-label="Filter courses">
@@ -111,15 +122,12 @@ export default function Courses() {
         </div>
       </section>
 
-      {/* ── Academic Programs ────────────────────────────────── */}
       <AnimatePresence initial={false}>
         {showAcademic && (
           <motion.section
             key="academic"
             variants={sectionVariants}
-            initial="hidden"
-            animate="show"
-            exit="exit"
+            initial="hidden" animate="show" exit="exit"
             className="bg-white dark:bg-[#0d1425]"
           >
             <div className="py-16 md:py-24">
@@ -133,12 +141,12 @@ export default function Courses() {
                   variants={staggerContainer}
                   {...inView()}
                 >
-                  {academicPrograms.map((program) => (
+                  {ACADEMIC_PROGRAMS.map((program) => (
                     <motion.div
                       key={program.title}
                       variants={fadeUp}
-                      whileHover={prefersReduced ? {} : { y: -4, scale: 1.02, boxShadow: '0 20px 40px rgba(26,58,143,0.12)' }}
-                      whileTap={prefersReduced ? {} : { scale: 0.98 }}
+                      whileHover={prefersReduced ? {} : { y: CARD_HOVER_Y, scale: CARD_HOVER_SCALE, boxShadow: CARD_HOVER_SHADOW }}
+                      whileTap={prefersReduced   ? {} : { scale: 0.98 }}
                       className="bg-[#f5f7fa] dark:bg-[#16213e] p-4 sm:p-6 rounded-2xl shadow-[0_4px_20px_rgba(26,58,143,0.07)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)] border-t-4 border-[#1a3a8f] dark:border-[#3d5fc4] flex flex-col h-full group"
                     >
                       <IconBadge icon={BookOpen} className="mb-4" />
@@ -162,18 +170,14 @@ export default function Courses() {
         )}
       </AnimatePresence>
 
-      {/* ── Divider (only when both sections visible) ────────── */}
       {filter === 'All' && <div className="bg-gradient-to-r from-[#29b6f6] to-[#1a3a8f] h-2" />}
 
-      {/* ── Skill Development ────────────────────────────────── */}
       <AnimatePresence initial={false}>
         {showSkill && (
           <motion.section
             key="skill"
             variants={sectionVariants}
-            initial="hidden"
-            animate="show"
-            exit="exit"
+            initial="hidden" animate="show" exit="exit"
             className="bg-[#f5f7fa] dark:bg-[#0a0f1e]"
           >
             <div className="py-16 md:py-24">
@@ -187,15 +191,14 @@ export default function Courses() {
                   variants={staggerContainer}
                   {...inView()}
                 >
-                  {skillCourses.map((course) => (
+                  {SKILL_COURSES.map((course) => (
                     <motion.div
                       key={course.title}
                       variants={fadeUp}
-                      whileHover={prefersReduced ? {} : { y: -4, scale: 1.02, boxShadow: '0 20px 40px rgba(26,58,143,0.12)' }}
-                      whileTap={prefersReduced ? {} : { scale: 0.98 }}
+                      whileHover={prefersReduced ? {} : { y: CARD_HOVER_Y, scale: CARD_HOVER_SCALE, boxShadow: CARD_HOVER_SHADOW }}
+                      whileTap={prefersReduced   ? {} : { scale: 0.98 }}
                       className="bg-white dark:bg-[#16213e] p-6 sm:p-8 rounded-2xl shadow-[0_4px_20px_rgba(26,58,143,0.07)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)] border-t-4 border-[#29b6f6] flex flex-col h-full group relative"
                     >
-                      {/* Duration badge — sits top-right; title has matching right padding */}
                       <span className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950/50 text-[#1a3a8f] dark:text-blue-300 text-xs font-semibold border border-blue-200 dark:border-blue-800/50 whitespace-nowrap">
                         {course.duration}
                       </span>
@@ -221,12 +224,11 @@ export default function Courses() {
         )}
       </AnimatePresence>
 
-      {/* ── Why Our Courses ──────────────────────────────────── */}
       <section className="py-16 md:py-24 bg-white dark:bg-[#0d1425]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading title="Why Choose Our Courses?" />
           <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-8" variants={staggerContainer} {...inView()}>
-            {whyItems.map((item) => (
+            {WHY_ITEMS.map((item) => (
               <motion.div key={item.title} variants={fadeUp} className="text-center p-6">
                 <div className="flex justify-center mb-4">
                   <IconBadge icon={item.icon} />
@@ -239,7 +241,6 @@ export default function Courses() {
         </div>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────────── */}
       <section className="py-12 md:py-16 text-white relative overflow-hidden"
         style={{ background: 'linear-gradient(135deg, #1a3a8f 0%, #16307a 50%, #29b6f6 100%)' }}>
         <div aria-hidden="true" className="absolute inset-0 opacity-[0.04]"
@@ -247,7 +248,7 @@ export default function Courses() {
         <motion.div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center" variants={fadeUp} {...inView()}>
           <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4">Ready to Enroll?</h2>
           <p className="text-blue-100 text-lg mb-8 leading-relaxed">Contact us today to learn more about our courses and enrollment process</p>
-          <motion.div whileHover={prefersReduced ? {} : { scale: 1.05 }} whileTap={prefersReduced ? {} : { scale: 0.97 }} className="inline-block">
+          <motion.div whileHover={prefersReduced ? {} : { scale: CTA_HOVER_SCALE }} whileTap={prefersReduced ? {} : { scale: CTA_TAP_SCALE }} className="inline-block">
             <Button variant="secondary" href="https://wa.me/923126174004" target="_blank" rel="noopener noreferrer"
               className="focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2">
               <span className="text-2xl mr-3">💬</span>

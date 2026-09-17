@@ -1,12 +1,3 @@
-/**
- * IconBadge — shared premium icon container used across all sections.
- *
- * Visual spec:
- *  - 48×48px square, rounded-xl
- *  - bg-blue-100 (light) / bg-blue-950/40 (dark) with matching border
- *  - Icon: brand blue (#1a3a8f) light / brighter blue (#93c5fd) dark
- *  - Optional `className` for margin/hover overrides from the call site
- */
 export default function IconBadge({ icon: Icon, className = '' }) {
   return (
     <div

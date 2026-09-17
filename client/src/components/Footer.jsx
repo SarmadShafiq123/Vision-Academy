@@ -3,12 +3,15 @@ import { motion, useReducedMotion } from 'motion/react';
 import { Phone, MessageCircle, Mail } from 'lucide-react';
 import logo from '../assets/vision-logo-transparent.png';
 
-const quickLinks = [
+const QUICK_LINKS = [
   { name: 'Home',     path: '/' },
   { name: 'About Us', path: '/about' },
   { name: 'Courses',  path: '/courses' },
   { name: 'Contact',  path: '/contact' },
 ];
+
+const SOCIAL_HOVER_SCALE = 1.1;
+const SOCIAL_TAP_SCALE   = 0.95;
 
 function FacebookIcon({ size = 18 }) {
   return (
@@ -20,7 +23,8 @@ function FacebookIcon({ size = 18 }) {
 
 function InstagramIcon({ size = 18 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
       <circle cx="12" cy="12" r="4" />
       <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none" />
@@ -42,7 +46,6 @@ export default function Footer() {
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-          {/* Logo + Description */}
           <div>
             <div className="mb-4">
               <img src={logo} alt="Vision Academy" className="h-20" />
@@ -53,16 +56,12 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Quick Links */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              {quickLinks.map((link) => (
+              {QUICK_LINKS.map((link) => (
                 <li key={link.name}>
-                  <Link
-                    to={link.path}
-                    className="text-gray-400 hover:text-[#29b6f6] transition-colors"
-                  >
+                  <Link to={link.path} className="text-gray-400 hover:text-[#29b6f6] transition-colors">
                     {link.name}
                   </Link>
                 </li>
@@ -70,7 +69,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact Info */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
             <ul className="space-y-2 text-gray-400">
@@ -82,12 +80,8 @@ export default function Footer() {
               </li>
               <li className="flex items-center space-x-2">
                 <MessageCircle size={15} strokeWidth={1.5} color="#29b6f6" />
-                <a
-                  href="https://wa.me/923126174004"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-[#29b6f6] transition-colors"
-                >
+                <a href="https://wa.me/923126174004" target="_blank" rel="noopener noreferrer"
+                  className="hover:text-[#29b6f6] transition-colors">
                   WhatsApp
                 </a>
               </li>
@@ -97,19 +91,16 @@ export default function Footer() {
               </li>
             </ul>
 
-            {/* Social Icons */}
             <div className="flex space-x-3 mt-4">
               <motion.a
                 href="https://www.facebook.com/profile.php?id=61594178853129"
-                target="_blank"
-                rel="noopener noreferrer"
+                target="_blank" rel="noopener noreferrer"
                 aria-label="Vision Academy on Facebook"
-                whileHover={prefersReduced ? {} : { scale: 1.1 }}
-                whileTap={prefersReduced ? {} : { scale: 0.95 }}
+                whileHover={prefersReduced ? {} : { scale: SOCIAL_HOVER_SCALE }}
+                whileTap={prefersReduced   ? {} : { scale: SOCIAL_TAP_SCALE }}
                 className={[
                   'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0',
-                  'bg-blue-100 dark:bg-blue-950/40',
-                  'border border-blue-200 dark:border-blue-800/50',
+                  'bg-blue-100 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/50',
                   'text-[#1a3a8f] dark:text-blue-300',
                   'hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors duration-200',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400',
@@ -119,15 +110,13 @@ export default function Footer() {
               </motion.a>
               <motion.a
                 href="https://www.instagram.com/visionacademyyy/"
-                target="_blank"
-                rel="noopener noreferrer"
+                target="_blank" rel="noopener noreferrer"
                 aria-label="Vision Academy on Instagram"
-                whileHover={prefersReduced ? {} : { scale: 1.1 }}
-                whileTap={prefersReduced ? {} : { scale: 0.95 }}
+                whileHover={prefersReduced ? {} : { scale: SOCIAL_HOVER_SCALE }}
+                whileTap={prefersReduced   ? {} : { scale: SOCIAL_TAP_SCALE }}
                 className={[
                   'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0',
-                  'bg-blue-100 dark:bg-blue-950/40',
-                  'border border-blue-200 dark:border-blue-800/50',
+                  'bg-blue-100 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/50',
                   'text-[#1a3a8f] dark:text-blue-300',
                   'hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors duration-200',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400',
@@ -143,10 +132,7 @@ export default function Footer() {
           <p>&copy; 2026 Vision Academy. All rights reserved.</p>
           <p className="text-xs text-gray-500 mt-2">
             Made with ❤️ by Sarmad Shafiq —{' '}
-            <a
-              href="mailto:mrsarmadshafiq@gmail.com"
-              className="hover:text-[#29b6f6] transition-colors"
-            >
+            <a href="mailto:mrsarmadshafiq@gmail.com" className="hover:text-[#29b6f6] transition-colors">
               mrsarmadshafiq@gmail.com
             </a>
           </p>

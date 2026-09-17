@@ -6,21 +6,29 @@ import ImageWithSkeleton from '../components/ImageWithSkeleton';
 import IconBadge from '../components/IconBadge';
 import missionImage from '../assets/about-mission.png';
 
+const CORE_VALUES = [
+  { icon: Award,       title: 'Excellence', text: 'We maintain the highest standards in education and continuously strive for improvement.' },
+  { icon: ShieldCheck, title: 'Integrity',  text: 'Honesty, transparency, and ethical practices guide everything we do.' },
+  { icon: Lightbulb,   title: 'Innovation', text: 'We embrace new teaching methods and technologies to enhance learning.' },
+];
+
+const FADE_UP_DURATION_S  = 0.45;
+const FADE_UP_Y_OFFSET    = 30;
+const STAGGER_DELAY_S     = 0.12;
+const VIEWPORT_MARGIN     = '-60px';
+const CARD_HOVER_Y        = -4;
+const CARD_HOVER_SCALE    = 1.02;
+const CARD_HOVER_SHADOW   = '0 20px 40px rgba(26,58,143,0.10)';
+
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.45, ease: 'easeOut' } },
+  hidden: { opacity: 0, y: FADE_UP_Y_OFFSET },
+  show:   { opacity: 1, y: 0, transition: { duration: FADE_UP_DURATION_S, ease: 'easeOut' } },
 };
 
 const staggerContainer = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.12 } },
+  show:   { transition: { staggerChildren: STAGGER_DELAY_S } },
 };
-
-const values = [
-  { icon: Award,       title: 'Excellence',  text: 'We maintain the highest standards in education and continuously strive for improvement.' },
-  { icon: ShieldCheck, title: 'Integrity',   text: 'Honesty, transparency, and ethical practices guide everything we do.' },
-  { icon: Lightbulb,   title: 'Innovation',  text: 'We embrace new teaching methods and technologies to enhance learning.' },
-];
 
 export default function About() {
   const prefersReduced = useReducedMotion();
@@ -28,11 +36,10 @@ export default function About() {
   const inView = (extra = {}) =>
     prefersReduced
       ? {}
-      : { initial: 'hidden', whileInView: 'show', viewport: { once: true, margin: '-60px' }, ...extra };
+      : { initial: 'hidden', whileInView: 'show', viewport: { once: true, margin: VIEWPORT_MARGIN }, ...extra };
 
   return (
     <div>
-      {/* ── Page Header ──────────────────────────────────────── */}
       <section className="py-10 md:py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -44,9 +51,8 @@ export default function About() {
               aria-hidden="true"
               className="absolute inset-0 opacity-[0.07]"
               style={{
-                backgroundImage:
-                  'repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%)',
-                backgroundSize: '18px 18px',
+                backgroundImage: 'repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%)',
+                backgroundSize:  '18px 18px',
               }}
             />
             <div className="relative z-10">
@@ -61,11 +67,9 @@ export default function About() {
         </div>
       </section>
 
-      {/* ── Mission & Vision ─────────────────────────────────── */}
       <section className="py-16 md:py-24 bg-white dark:bg-[#0d1425]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-
             <motion.div variants={staggerContainer} {...inView()}>
               <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold leading-tight text-[#1a1a2e] dark:text-[#e8eaf0] mb-6">
                 Our Mission &amp; Vision
@@ -97,19 +101,13 @@ export default function About() {
                 className="h-96 w-full object-cover rounded-2xl shadow-[0_8px_30px_rgba(26,58,143,0.10)]"
               />
             </motion.div>
-
           </div>
         </div>
       </section>
 
-      {/* ── Our Story ────────────────────────────────────────── */}
       <section className="py-16 md:py-24 bg-[#f5f7fa] dark:bg-[#0a0f1e]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            className="max-w-4xl mx-auto"
-            variants={staggerContainer}
-            {...inView()}
-          >
+          <motion.div className="max-w-4xl mx-auto" variants={staggerContainer} {...inView()}>
             <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold leading-tight text-[#1a1a2e] dark:text-[#e8eaf0] mb-6 text-center">
               Our Story
             </motion.h2>
@@ -131,13 +129,11 @@ export default function About() {
         </div>
       </section>
 
-      {/* ── Stats ────────────────────────────────────────────── */}
       <StatsSection
         title="Our Achievements in Numbers"
         description="A decade of excellence and impact"
       />
 
-      {/* ── Core Values ──────────────────────────────────────── */}
       <section className="py-16 md:py-24 bg-white dark:bg-[#0d1425]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading title="Our Core Values" />
@@ -146,12 +142,12 @@ export default function About() {
             variants={staggerContainer}
             {...inView()}
           >
-            {values.map((v) => (
+            {CORE_VALUES.map((v) => (
               <motion.div
                 key={v.title}
                 variants={fadeUp}
-                whileHover={prefersReduced ? {} : { y: -4, scale: 1.02, boxShadow: '0 20px 40px rgba(26,58,143,0.10)' }}
-                whileTap={prefersReduced ? {} : { scale: 0.98 }}
+                whileHover={prefersReduced ? {} : { y: CARD_HOVER_Y, scale: CARD_HOVER_SCALE, boxShadow: CARD_HOVER_SHADOW }}
+                whileTap={prefersReduced   ? {} : { scale: 0.98 }}
                 className="bg-[#f5f7fa] dark:bg-[#16213e] p-8 rounded-2xl cursor-default shadow-[0_4px_20px_rgba(26,58,143,0.06)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)] group"
               >
                 <IconBadge icon={v.icon} className="mb-4" />
